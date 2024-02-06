@@ -2,6 +2,9 @@
 INSERT IGNORE INTO plugins (name, version) 
 VALUES ('lab-js', 'v1.0.0');
 
+-- register hook get_csp_rules
+INSERT IGNORE INTO `hooks` (`id_hookTypes`, `name`, `description`, `class`, `function`, `exec_class`, `exec_function`, `priority`) VALUES ((SELECT id FROM lookups WHERE lookup_code = 'hook_overwrite_return' LIMIT 0,1), 'lab-js-addCspRule', 'Add csp rule for LabJS', 'BasePage', 'getCspRules', 'LabJSHooks', 'setCspRules', 1);
+
 -- Add new style `labJS`
 INSERT IGNORE INTO `styles` (`name`, `id_type`, `id_group`, `description`) VALUES ('labJS', (SELECT id FROM styleType WHERE `name` = 'component'), (select id from styleGroup where `name` = 'Wrapper' limit 1), 'A style which takes a labJS experiment and load it on the page');
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) VALUES (get_style_id('labJS'), get_field_id('css'), NULL, 'Allows to assign CSS classes to the root item of the style.');

@@ -116,7 +116,7 @@ class LabJSHooks extends BaseHooks
      * @return boolean
      * Return true if the page contains survey js or false
      */
-    private function page_has_survey_js($page_keyword, $id_page = null)
+    private function page_has_lab_js($page_keyword, $id_page = null)
     {
         if ($id_page == null) {
             $id_page = $this->db->fetch_page_id_by_keyword($page_keyword);
@@ -128,7 +128,7 @@ class LabJSHooks extends BaseHooks
         } else {
             foreach ($res as $key => $value) {
                 if (isset($value['style_name'])) {
-                    if ($value['style_name'] == 'surveyJS') {
+                    if ($value['style_name'] == LABJS_STYLE) {
                         // the page has surveyJS
                         return true;
                     }
@@ -176,14 +176,11 @@ class LabJSHooks extends BaseHooks
         $resArr = explode(';', strval($res));
         foreach ($resArr as $key => $value) {
             if (strpos($value, 'script-src') !== false) {
-                if ($this->router->route && in_array($this->router->route['name'], array(PAGE_SURVEY_JS_MODE, PAGE_SURVEY_JS_DASHBOARD))) {
-                    // enable only for 2 pages
-                    $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
-                } else if ($this->router->route && $this->page_has_survey_js($this->router->route['name'])) {
+                if ($this->router->route && $this->page_has_lab_js($this->router->route['name'])) {
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
                 } else if (
                     $this->router->route && in_array($this->router->route['name'], array("cmsSelect", "cmsUpdate")) &&
-                    isset($this->router->route['params']['pid']) && $this->page_has_survey_js($this->router->route['name'], $this->router->route['params']['pid'])
+                    isset($this->router->route['params']['pid']) && $this->page_has_lab_js($this->router->route['name'], $this->router->route['params']['pid'])
                 ) {
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
                 }
