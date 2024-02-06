@@ -859,7 +859,9 @@ function loadFiles(obj) {
         var comp = obj.components[keyComp];
         for (let keyFiles in comp.files) {
             var file = comp.files[keyFiles];
-            file.poolPath = obj.files.files[file.poolPath].content;
+            if (obj.files.files[file.poolPath] && obj.files.files[file.poolPath].content) {
+                file.poolPath = obj.files.files[file.poolPath].content;
+            }
         };
     }
 }
