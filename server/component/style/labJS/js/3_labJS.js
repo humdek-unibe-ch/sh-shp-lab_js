@@ -962,7 +962,6 @@ const processItems = items =>
         })
 
 const processContent = (nodeType, content) => {
-    console.log(content);
     switch (nodeType) {
         case 'lab.canvas.Screen':
             return content.map(c => _.pick(c, [

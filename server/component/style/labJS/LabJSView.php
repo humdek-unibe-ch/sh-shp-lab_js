@@ -188,14 +188,15 @@ class LabJSView extends StyleView
     public function get_js_includes($local = array())
     {
         if (empty($local)) {
-            $local = array(
-                __DIR__ . "/js/1_lodash.min.js",
-                // __DIR__ . "/js/1_serializejs.min.js",
-                __DIR__ . "/js/1_lab.js",
-                // __DIR__ . "/js/lab.dev.js",
-                // __DIR__ . "/js/2_lab.fallback.js",
-                __DIR__ . "/js/3_labJS.js"
-            );
+            if (DEBUG) {
+                $local = array(
+                    __DIR__ . "/js/1_lodash.min.js",
+                    __DIR__ . "/js/2_lab.js",
+                    __DIR__ . "/js/3_labJS.js"
+                );
+            } else {
+                $local = array(__DIR__ . "/../../../../../lab-js/js/ext/lab-js.min.js?v=" . rtrim(shell_exec("git describe --tags")));
+            }
         }
         return parent::get_js_includes($local);
     }
