@@ -35,8 +35,8 @@ class ModuleLabJSController extends BaseController
                 $url = $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => UPDATE, "lid" => $lid));
                 header('Location: ' . $url);
             }
-        } else if ($mode === UPDATE && $lid > 0 && isset($_POST['labJson'])) {
-            $this->model->update_lab($lid, $_POST['labJson']);
+        } else if ($mode === UPDATE && $lid > 0 && isset($_POST['config']) && isset($_POST['name'])) {
+            $this->model->update_labjs($lid, $_POST['config']);
         } else if ($mode === UPDATE && $lid > 0 && isset($_POST['mode']) && $_POST['mode'] == 'publish') {
             $this->model->publish_lab($lid);
         } else if ($mode === DELETE && $lid > 0) {

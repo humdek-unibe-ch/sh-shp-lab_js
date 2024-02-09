@@ -78,13 +78,13 @@ class ModuleLabJSView extends BaseView
                                     "url" => $this->model->get_link_url("moduleLabJS"),
                                     "type" => "secondary",
                                 )),
-                                new BaseStyleComponent("button", array(
-                                    "label" => "Publish",
-                                    "id" => "lab-js-publish",
-                                    "url" => "#",
-                                    "type" => "warning",
-                                    "css" => "ml-3 " . (isset($this->lab['config']) && $this->lab['config'] == $this->lab['published'] ? 'disabled' : '')
-                                )),
+                                // new BaseStyleComponent("button", array(
+                                //     "label" => "Publish",
+                                //     "id" => "lab-js-publish",
+                                //     "url" => "#",
+                                //     "type" => "warning",
+                                //     "css" => "ml-3 " . (isset($this->lab['config']) && $this->lab['config'] == $this->lab['published'] ? 'disabled' : '')
+                                // )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Dashboard",
                                     "url" => $this->model->get_link_url("moduleLabJSDashboard", array("lid" => $this->lid)),
@@ -115,6 +115,39 @@ class ModuleLabJSView extends BaseView
                     "id" => "lab-js-card",
                     "title" => $card_title,
                     "children" => array(
+                        new BaseStyleComponent("form", array(
+                            "label" => "Update LabJS",
+                            "id" => "lab-js-form",
+                            "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => UPDATE, "lid" => $this->lid)),
+                            "type" => "warning",
+                            "url_cancel" => $this->model->get_link_url(PAGE_LAB_JS, array()),
+                            "children" => array(
+                                new BaseStyleComponent("input", array(
+                                    "type_input" => "hidden",
+                                    "name" => "labjs_generated_id",
+                                    "value" => isset($this->lab['generated_id']) ? $this->lab['generated_id'] : '',
+                                    "is_required" => true
+                                )),
+                                new BaseStyleComponent("input", array(
+                                    "label" => "LabJS experiment name",
+                                    "type_input" => "text",
+                                    "name" => "name",
+                                    "value" => isset($this->lab['name']) ? $this->lab['name'] : '',
+                                    "is_required" => true,
+                                    "css" => "mb-3",
+                                    "placeholder" => "Enter LabJS experiment name",
+                                )),
+                                new BaseStyleComponent("textarea", array(
+                                    "label" => "LabJS JSON",
+                                    "name" => "config",
+                                    "css" => "lab-js-value mb-3",
+                                    "value" => isset($this->lab['config']) ? $this->lab['config'] : '',
+                                    "type_input" => "json",
+                                    "json_mapper" => false,
+                                    "placeholder" => "LabJS JSON",
+                                ))
+                            ),
+                        ))
                         // new BaseStyleComponent("template", array(
                         //     "path" => __DIR__ . "/tpl_moduleLabJSBuilder.php",
                         //     "items" => array(

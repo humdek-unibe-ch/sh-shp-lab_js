@@ -64,16 +64,16 @@ class ModuleLabJSModel extends BaseModel
      * @return int
      *  The id of the new lab or false if the process failed.
      */
-    public function update_lab($lid, $labJson)
+    public function update_labjs($lid, $labJson)
     {
         try {
             $this->db->begin_transaction();
-            $this->db->update_by_ids(SURVEYJS_TABLE_SURVEYS, array("config" => json_encode($labJson)), array('id' => $lid));
+            $this->db->update_by_ids(LABJS_TABLE_LABJS, array("config" => $labJson, "name" => $_POST['name']), array('id' => $lid));
             $this->transaction->add_transaction(
                 transactionTypes_update,
                 transactionBy_by_user,
                 $_SESSION['id_user'],
-                SURVEYJS_TABLE_SURVEYS,
+                LABJS_TABLE_LABJS,
                 $lid
             );
             $this->db->commit();

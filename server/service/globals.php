@@ -7,5 +7,6 @@
 <?php
 define('LABJS_STYLE', 'labJS');
 define('PAGE_LAB_JS_MODE', 'moduleLabJSMode');
+define('PAGE_LAB_JS', 'moduleLabJS');
 define('LABJS_TABLE_LABJS', 'labjs');
 ?>

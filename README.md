@@ -11,4 +11,4 @@ This is a SelfHelpPlugin that is used for [LabJS](https://lab.js.org) integratio
 
 # Requirements
 
- - SelfHelp v6.9.1+
+ - SelfHelp v6.9.2+
