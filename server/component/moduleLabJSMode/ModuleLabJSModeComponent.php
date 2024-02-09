@@ -28,11 +28,11 @@ class ModuleLabJSModeComponent extends BaseComponent
      */
     public function __construct($services, $params)
     {
-        $sid = isset($params['sid']) ? intval($params['sid']) : null;
+        $lid = isset($params['lid']) ? intval($params['lid']) : null;
         $mode = isset($params['mode']) ? $params['mode'] : null;
         $model = new ModuleLabJSModel($services);
-        $controller = new ModuleLabJSController($model, $mode, $sid);
-        $view = new ModuleLabJSView($model, $controller, $mode, $sid);
+        $controller = new ModuleLabJSController($model, $mode, $lid);
+        $view = new ModuleLabJSView($model, $controller, $mode, $lid);
         parent::__construct($model, $view, $controller);
     }
 }

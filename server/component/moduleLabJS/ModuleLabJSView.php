@@ -36,11 +36,11 @@ class ModuleLabJSView extends BaseView
      * @param object $model
      *  The model instance of the component.
      */
-    public function __construct($model, $controller, $mode, $sid)
+    public function __construct($model, $controller, $mode, $lid)
     {
         parent::__construct($model, $controller);
         $this->mode = $mode;
-        $this->lid = $sid;
+        $this->lid = $lid;
         if ($this->lid) {
             $this->lab = $this->model->get_labjs($this->lid);
         }
@@ -87,22 +87,22 @@ class ModuleLabJSView extends BaseView
                                 )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Dashboard",
-                                    "url" => $this->model->get_link_url("moduleLabJSDashboard", array("sid" => $this->lid)),
+                                    "url" => $this->model->get_link_url("moduleLabJSDashboard", array("lid" => $this->lid)),
                                     "type" => "primary",
                                     "css" => "ml-3"
                                 )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Versions",
-                                    "url" => $this->model->get_link_url("moduleLabJSVersions", array("sid" => $this->lid)),
+                                    "url" => $this->model->get_link_url("moduleLabJSVersions", array("lid" => $this->lid)),
                                     "type" => "primary",
                                     "css" => "ml-3"
                                 ))
                             )
                         )),
                         new BaseStyleComponent("button", array(
-                            "label" => "Delete Lab",
+                            "label" => "Delete Labjs",
                             "id" => "lab-js-delete-btn",
-                            "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => DELETE, "sid" => $this->lid)),
+                            "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => DELETE, "lid" => $this->lid)),
                             "type" => "danger",
                         ))
                     )

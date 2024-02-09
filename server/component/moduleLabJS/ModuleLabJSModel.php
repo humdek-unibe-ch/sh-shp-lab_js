@@ -36,7 +36,7 @@ class ModuleLabJSModel extends BaseModel
         try {
             $this->db->begin_transaction();
             $labjs_gen_id = "LJS_" . substr(uniqid(), -15);
-            $sid = $this->db->insert(LABJS_TABLE_LABJS, array(
+            $lid = $this->db->insert(LABJS_TABLE_LABJS, array(
                 "labjs_generated_id" => $labjs_gen_id,
                 "name" => $labjs_gen_id
             ));
@@ -45,10 +45,10 @@ class ModuleLabJSModel extends BaseModel
                 transactionBy_by_user,
                 $_SESSION['id_user'],
                 LABJS_TABLE_LABJS,
-                $sid
+                $lid
             );
             $this->db->commit();
-            return $sid;
+            return $lid;
         } catch (Exception $e) {
             $this->db->rollback();
             return false;
@@ -57,27 +57,27 @@ class ModuleLabJSModel extends BaseModel
 
     /**
      * Update a LabJS.   
-     * @param int $sid
+     * @param int $lid
      * Lab id,
      * @param object $labJson
      * Lab json data
      * @return int
      *  The id of the new lab or false if the process failed.
      */
-    public function update_lab($sid, $labJson)
+    public function update_lab($lid, $labJson)
     {
         try {
             $this->db->begin_transaction();
-            $this->db->update_by_ids(SURVEYJS_TABLE_SURVEYS, array("config" => json_encode($labJson)), array('id' => $sid));
+            $this->db->update_by_ids(SURVEYJS_TABLE_SURVEYS, array("config" => json_encode($labJson)), array('id' => $lid));
             $this->transaction->add_transaction(
                 transactionTypes_update,
                 transactionBy_by_user,
                 $_SESSION['id_user'],
                 SURVEYJS_TABLE_SURVEYS,
-                $sid
+                $lid
             );
             $this->db->commit();
-            return $sid;
+            return $lid;
         } catch (Exception $e) {
             $this->db->rollback();
             return false;
@@ -86,17 +86,17 @@ class ModuleLabJSModel extends BaseModel
 
     /**
      * Get lab
-     * @param int $sid
+     * @param int $lid
      * lab id
      * @param return object
      * Return the lab row
      */
-    public function get_lab($sid)
+    public function get_labjs($lid)
     {
-        $sql = "SELECT *, JSON_UNQUOTE(JSON_EXTRACT(config, '$.title')) AS lab_name
-                FROM labs
+        $sql = "SELECT *
+                FROM labjs
                 WHERE id = :id";
-        return $this->db->query_db_first($sql, array(':id' => $sid));
+        return $this->db->query_db_first($sql, array(':id' => $lid));
     }
 
     /**
@@ -111,36 +111,36 @@ class ModuleLabJSModel extends BaseModel
 
     /**
      * Delete lab
-     * @param int $sid
+     * @param int $lid
      * The lab id
      * @return bool
      * Return the success result of the operation
      */
-    public function delete_lab($sid)
+    public function delete_lab($lid)
     {
-        return $this->db->remove_by_ids("labs", array("id" => $sid));
+        return $this->db->remove_by_ids("labjs", array("id" => $lid));
     }
 
     /**
      * Publish lab
-     * @param int $sid
+     * @param int $lid
      * The lab id
      * @return bool
      * Return the success result of the operation
      */
-    public function publish_lab($sid)
+    public function publish_lab($lid)
     {
         $sql = 'UPDATE labs
                 SET published = config, published_at = NOW()
                 WHERE id =:sid;';
-        $res = $this->db->execute_update_db($sql, array(":sid" => $sid));
+        $res = $this->db->execute_update_db($sql, array(":sid" => $lid));
         if ($res) {
             // add new version of the lab
-            $lab = $this->get_lab($sid);
+            $lab = $this->get_labjs($lid);
 
             $res = $res &&  $this->db->insert(SURVEYJS_TABLE_SURVEYS_VERSIONS, array(
                 "id_users" => $_SESSION['id_user'],
-                "id_labs" => $sid,
+                "id_labs" => $lid,
                 "config" => $lab['published'],
                 "published" => 1
             ));
