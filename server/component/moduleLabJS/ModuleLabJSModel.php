@@ -35,14 +35,16 @@ class ModuleLabJSModel extends BaseModel
     {
         try {
             $this->db->begin_transaction();
-            $sid = $this->db->insert(SURVEYJS_TABLE_SURVEYS, array(
-                "lab_generated_id" => "SVJS_" . substr(uniqid(), -15)
+            $labjs_gen_id = "LJS_" . substr(uniqid(), -15);
+            $sid = $this->db->insert(LABJS_TABLE_LABJS, array(
+                "labjs_generated_id" => $labjs_gen_id,
+                "name" => $labjs_gen_id
             ));
             $this->transaction->add_transaction(
                 transactionTypes_insert,
                 transactionBy_by_user,
                 $_SESSION['id_user'],
-                SURVEYJS_TABLE_SURVEYS,
+                LABJS_TABLE_LABJS,
                 $sid
             );
             $this->db->commit();
@@ -104,7 +106,7 @@ class ModuleLabJSModel extends BaseModel
      */
     public function get_labs()
     {
-        return $this->db->select_table("view_labs");
+        return $this->db->select_table("labjs");
     }
 
     /**

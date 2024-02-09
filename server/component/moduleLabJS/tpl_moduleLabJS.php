@@ -11,8 +11,8 @@
         <div class="col">    
             <?php $this->output_alert(); ?>        
             <div class="jumbotron">
-                <h1>Labs</h1>
-                <p>This page shows all created labs. If you click on a lab you can select it.
+                <h1>Labjs</h1>
+                <p>This page shows all created labs. If you click on a labjs you can select it.
                 </p>                 
             </div>
             <?php $this->output_page_content(); ?>   

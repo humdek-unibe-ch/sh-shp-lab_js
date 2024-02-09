@@ -6,4 +6,6 @@
 
 <?php
 define('LABJS_STYLE', 'labJS');
+define('PAGE_LAB_JS_MODE', 'moduleLabJSMode');
+define('LABJS_TABLE_LABJS', 'labjs');
 ?>

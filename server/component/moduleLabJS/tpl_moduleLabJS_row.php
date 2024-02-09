@@ -5,8 +5,8 @@
 ?>
 <tr class="cursor-pointer" id="labs-js-url-<?php echo $lab['id']; ?>">
     <td><?php echo $lab['id']; ?></td>
-    <td><?php echo $lab['lab_generated_id']; ?></td>
-    <td><?php echo $lab['lab_name']; ?></td>
+    <td><?php echo $lab['labjs_generated_id']; ?></td>
+    <td><?php echo $lab['name']; ?></td>
     <td><?php echo $lab['created_at']; ?></td>
     <td><?php echo $lab['updated_at']; ?></td>
 </tr>

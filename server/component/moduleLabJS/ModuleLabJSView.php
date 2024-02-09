@@ -18,7 +18,7 @@ class ModuleLabJSView extends BaseView
      * Lab id, 
      * if it is > 0  edit/delete lab page     
      */
-    private $sid;
+    private $lid;
 
     /**
      * The mode type of the form EDIT, DELETE, INSERT, VIEW     
@@ -40,9 +40,9 @@ class ModuleLabJSView extends BaseView
     {
         parent::__construct($model, $controller);
         $this->mode = $mode;
-        $this->sid = $sid;
-        if ($this->sid) {
-            // $this->lab = $this->model->get_lab($this->sid);
+        $this->lid = $sid;
+        if ($this->lid) {
+            $this->lab = $this->model->get_labjs($this->lid);
         }
     }
 
@@ -64,7 +64,7 @@ class ModuleLabJSView extends BaseView
                 $card_title = $card_title . '<span class="text-right flex-grow-1">Published at: <code id="lab-js-publish-at">' . $this->lab['published_at'] . '</code> </span>';
             } else {
                 $card_title = $card_title . '<span class="text-right flex-grow-1"><code>Not published yet</code> </span>';
-            }            
+            }
             $labJSHolderChildren = array(
                 $this->output_check_multiple_users(true),
                 new   BaseStyleComponent("div", array(
@@ -87,13 +87,13 @@ class ModuleLabJSView extends BaseView
                                 )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Dashboard",
-                                    "url" => $this->model->get_link_url("moduleLabJSDashboard", array("sid" => $this->sid)),
+                                    "url" => $this->model->get_link_url("moduleLabJSDashboard", array("sid" => $this->lid)),
                                     "type" => "primary",
                                     "css" => "ml-3"
                                 )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Versions",
-                                    "url" => $this->model->get_link_url("moduleLabJSVersions", array("sid" => $this->sid)),
+                                    "url" => $this->model->get_link_url("moduleLabJSVersions", array("sid" => $this->lid)),
                                     "type" => "primary",
                                     "css" => "ml-3"
                                 ))
@@ -102,7 +102,7 @@ class ModuleLabJSView extends BaseView
                         new BaseStyleComponent("button", array(
                             "label" => "Delete Lab",
                             "id" => "lab-js-delete-btn",
-                            "url" => $this->model->get_link_url(PAGE_SURVEY_JS_MODE, array("mode" => DELETE, "sid" => $this->sid)),
+                            "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => DELETE, "sid" => $this->lid)),
                             "type" => "danger",
                         ))
                     )
@@ -114,12 +114,14 @@ class ModuleLabJSView extends BaseView
                     "type" => "warning",
                     "id" => "lab-js-card",
                     "title" => $card_title,
-                    "children" => array(new BaseStyleComponent("template", array(
-                        "path" => __DIR__ . "/tpl_moduleLabCreatorJS.php",
-                        "items" => array(
-                            "lab" => $this->lab
-                        )
-                    )))
+                    "children" => array(
+                        // new BaseStyleComponent("template", array(
+                        //     "path" => __DIR__ . "/tpl_moduleLabJSBuilder.php",
+                        //     "items" => array(
+                        //         "lab" => $this->lab
+                        //     )
+                        // ))
+                    )
                 ))
             );
             $labJSHolder = new BaseStyleComponent("div", array(
@@ -202,7 +204,7 @@ class ModuleLabJSView extends BaseView
         //show create button
         $createButton = new BaseStyleComponent("button", array(
             "label" => "Create New LabJS",
-            "url" => $this->model->get_link_url(PAGE_SURVEY_JS_MODE, array("mode" => INSERT)),
+            "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => INSERT)),
             "type" => "secondary",
             "css" => "d-block mb-3",
         ));

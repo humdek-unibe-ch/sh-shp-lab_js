@@ -7,9 +7,9 @@
     <table id="labs-js" class="table table-sm table-hover">
         <thead>
             <tr>
-                <th scope="col">Lab ID</th>
-                <th scope="col">Generated Lab ID</th>
-                <th scope="col">Lab Name</th>
+                <th scope="col">Labjs ID</th>
+                <th scope="col">Generated Labjs ID</th>
+                <th scope="col">Labjs Name</th>
                 <th scope="col">Created At</th>
                 <th scope="col">Updated At</th>
             </tr>
