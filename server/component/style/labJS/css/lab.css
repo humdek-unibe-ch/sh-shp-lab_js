@@ -51,7 +51,7 @@
     background: var(--color-background);
 }
 
-.selfHelp-lab-js .container {
+.selfHelp-lab-js-holder .container {
     min-width: 320px;
     min-width: var(--width-min-container);
     min-height: 8vh;
@@ -109,7 +109,7 @@
 }
 
 /* Fullscreen layout */
-.selfHelp-lab-js .container.fullscreen {
+.selfHelp-lab-js-holder .container.fullscreen {
     /* Full screen minus margins */
     margin: 24px;
     margin: var(--padding-internal);
@@ -125,20 +125,20 @@
     flex-direction: column;
 }
 
-.selfHelp-lab-js .container.fullscreen main {
+.selfHelp-lab-js-holder .container.fullscreen main {
     /* Flex positioning */
     -webkit-box-flex: 1;
     flex: 1;
 }
 
 /* Frameless layout */
-.selfHelp-lab-js .container.frameless {
+.selfHelp-lab-js-holder .container.frameless {
     margin: 0 auto;
     border: none;
     border-radius: 0;
 }
 
-.selfHelp-lab-js .container.fullscreen.frameless {
+.selfHelp-lab-js-holder .container.fullscreen.frameless {
     margin: 0;
     width: 100%;
     min-height: 100vh;
@@ -147,7 +147,7 @@
 /* Remove frame on small screens */
 @media (max-width: 600px),
 (max-height: 600px) {
-    .selfHelp-lab-js .container.fullscreen {
+    .selfHelp-lab-js-holder .container.fullscreen {
         margin: 0;
         border: none;
         border-radius: 0;
@@ -164,7 +164,7 @@
         display: flex;
     }
 
-    .selfHelp-lab-js .container.fullscreen {
+    .selfHelp-lab-js-holder .container.fullscreen {
         /* IE11 miscalculates the height, so add some slack */
         min-height: calc(100vh - 3*24px);
         min-height: calc(100vh - 3*var(--padding-internal));
@@ -172,7 +172,7 @@
 }
 
 /* Borders and backgrounds */
-.selfHelp-lab-js .container {
+.selfHelp-lab-js-holder .container {
     border: 1px solid #e5e5e5;
     border: 1px solid var(--color-border);
     border-radius: 5px;
@@ -641,7 +641,7 @@
 }
 
 /* Width, for some reason, needs to be set explicitly */
-.selfHelp-lab-js .container.fullscreen .popover {
+.selfHelp-lab-js-holder .container.fullscreen .popover {
     width: calc(100vw - 2*24px);
     width: calc(100vw - 2*var(--padding-internal));
 }
@@ -649,7 +649,7 @@
 /* Repeated for frameless mode on small screens */
 @media (max-width: 600px),
 (max-height: 600px) {
-    .selfHelp-lab-js .container.fullscreen .popover {
+    .selfHelp-lab-js-holder .container.fullscreen .popover {
         width: 100vw;
     }
 }
@@ -659,7 +659,7 @@
     margin: 0 auto;
 }
 
-.selfHelp-lab-js .container:not(.fullscreen) .popover {
+.selfHelp-lab-js-holder .container:not(.fullscreen) .popover {
     width: 900px;
     width: var(--width-container);
 }
@@ -695,3 +695,5 @@
     padding-top: 24px;
     top: -8px;
 }
+
+
