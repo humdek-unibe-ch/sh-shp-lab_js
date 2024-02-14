@@ -102,7 +102,7 @@ class LabJSModel extends StyleModel
     private function get_raw_lab()
     {
         $sid = $this->get_db_field('lab-js', '');
-        return $this->db->query_db_first("SELECT * FROM view_labs WHERE id = :id", array(':id' => $sid));
+        return $this->db->query_db_first("SELECT * FROM labjs WHERE id = :id", array(':id' => $sid));
     }
 
     /**

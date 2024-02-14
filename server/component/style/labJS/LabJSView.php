@@ -48,25 +48,6 @@ class LabJSView extends StyleView
      */
     private $auto_save_interval;
 
-    /**
-     * Selected lab theme
-     */
-    private $lab_js_theme;
-
-    /**
-     * If true the lab can be saved as a PDF
-     */
-    private $save_pdf;
-
-    /**
-     * If enabled, parameters can be passed via the url. Example: `?code=test&par1=2&par2=2`
-     */
-    private $url_params;
-
-    /**
-     * When a non-zero value is set for this field, it serves as a `Lab Timeout` or `Lab Expiry Time`
-     */
-    private $timeout;
 
     /* Constructors ***********************************************************/
 
@@ -90,10 +71,6 @@ class LabJSView extends StyleView
         $this->restart_on_refresh = $this->model->get_db_field('restart_on_refresh', '');
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
         $this->auto_save_interval = $this->model->get_db_field('auto_save_interval', 0);
-        $this->timeout = $this->model->get_db_field('timeout', 0);
-        $this->url_params = $this->model->get_db_field('url_params', '');
-        $this->save_pdf = $this->model->get_db_field('save_pdf');
-        $this->lab_js_theme = $this->model->get_db_field('lab-js-theme');
     }
 
 
@@ -104,8 +81,6 @@ class LabJSView extends StyleView
      */
     public function output_content()
     {
-        require __DIR__ . "/tpl_labJS.php";
-        return true;
         if ($this->model->is_lab_active()) {
             if ($this->model->is_lab_done()) {
                 if ($this->label_lab_done != '') {
@@ -126,18 +101,8 @@ class LabJSView extends StyleView
                     "restart_on_refresh" => boolval($this->restart_on_refresh),
                     "redirect_at_end" => $redirect_at_end,
                     "auto_save_interval" => $this->auto_save_interval,
-                    "timeout" => $this->timeout,
-                    "lab_js_theme" => $this->lab_js_theme,
-                    "save_pdf" => $this->save_pdf,
-                    "lab_generated_id" => isset($this->lab['lab_generated_id']) ? $this->lab['lab_generated_id'] : null
+                    "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null
                 );
-                if ($this->url_params) {
-                    $url_components = parse_url($this->model->get_services()->get_router()->get_url('#self')); // get the requested url
-                    $extra_labjs_params = isset($url_components['query']) ? $url_components['query'] : ''; // check if the url contains url parameters (the same format as Qualtrics)
-                    $extra_params_arr = array();
-                    parse_str($extra_labjs_params, $extra_params_arr);
-                    $lab_fields['extra_params'] = $extra_params_arr;
-                }
                 $lab_fields = json_encode($lab_fields);
                 require __DIR__ . "/tpl_labJS.php";
             }
@@ -162,10 +127,10 @@ class LabJSView extends StyleView
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
         $style['redirect_at_end']['content'] = str_replace(BASE_PATH, "", $redirect_at_end);
-        $style['lab_json'] = $this->lab['content'] ? json_decode($this->lab['content']) : [];
+        $style['lab_json'] = $this->lab['config'] ? json_decode($this->lab['config']) : [];
         $style['alert'] = '';
         $style['show_lab'] = true;
-        $style['lab_generated_id'] = $this->lab['lab_generated_id'];
+        $style['labjs_generated_id'] = $this->lab['labjs_generated_id'];
         if ($this->model->is_lab_active()) {
             if ($this->model->is_lab_done()) {
                 $style['alert'] = $this->label_lab_done;

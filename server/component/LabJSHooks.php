@@ -29,7 +29,7 @@ class LabJSHooks extends BaseHooks
     /* Private Methods *********************************************************/
 
     /**
-     * Output select SurveyJS field
+     * Output select LabJS field
      * @param string $value
      * Value of the field
      * @param string $name
@@ -39,7 +39,7 @@ class LabJSHooks extends BaseHooks
      * @return object
      * Return instance of BaseStyleComponent -> select style
      */
-    private function outputSelectSurveyJSField($value, $name, $disabled)
+    private function outputSelectLabJSField($value, $name, $disabled)
     {
         return new BaseStyleComponent("select", array(
             "value" => $value,
@@ -48,31 +48,7 @@ class LabJSHooks extends BaseHooks
             "live_search" => 1,
             "is_required" => 1,
             "disabled" => $disabled,
-            "items" => $this->db->fetch_table_as_select_values('view_surveys', 'id', array('survey_generated_id', 'survey_name'))
-        ));
-    }
-
-    /**
-     * Output select SurveyJS themes
-     * @param string $value
-     * Value of the field
-     * @param string $name
-     * The name of the fields
-     * @param int $disabled 0 or 1
-     * If the field is in edit mode or view mode (disabled)
-     * @return object
-     * Return instance of BaseStyleComponent -> select style
-     */
-    private function outputSelectSurveyJSThemes($value, $name, $disabled)
-    {
-        return new BaseStyleComponent("select", array(
-            "value" => $value,
-            "name" => $name,
-            "max" => 10,
-            "live_search" => 0,
-            "is_required" => 1,
-            "disabled" => $disabled,
-            "items" => $this->db->fetch_table_as_select_values('lookups', 'lookup_code', array('lookup_value'), 'WHERE type_code = :type_code', array(":type_code" => SURVEY_JS_THEMES))
+            "items" => $this->db->fetch_table_as_select_values('labjs', 'id', array('labjs_generated_id', 'name'))
         ));
     }
 
@@ -85,21 +61,13 @@ class LabJSHooks extends BaseHooks
      * @return object
      * Return a BaseStyleComponent object
      */
-    private function returnSelectSurveyJSField($args, $disabled)
+    private function returnSelectLabJSField($args, $disabled)
     {
         $field = $this->get_param_by_name($args, 'field');
         $res = $this->execute_private_method($args);
-        if ($field['name'] == 'survey-js') {
+        if ($field['name'] == 'lab-js') {
             $field_name_prefix = "fields[" . $field['name'] . "][" . $field['id_language'] . "]" . "[" . $field['id_gender'] . "]";
-            $selectField = $this->outputSelectSurveyJSField($field['content'], $field_name_prefix . "[content]", $disabled);
-            if ($selectField && $res) {
-                $children = $res->get_view()->get_children();
-                $children[] = $selectField;
-                $res->get_view()->set_children($children);
-            }
-        } else if ($field['name'] == 'survey-js-theme') {
-            $field_name_prefix = "fields[" . $field['name'] . "][" . $field['id_language'] . "]" . "[" . $field['id_gender'] . "]";
-            $selectField = $this->outputSelectSurveyJSThemes($field['content'], $field_name_prefix . "[content]", $disabled);
+            $selectField = $this->outputSelectLabJSField($field['content'], $field_name_prefix . "[content]", $disabled);
             if ($selectField && $res) {
                 $children = $res->get_view()->get_children();
                 $children[] = $selectField;
@@ -110,11 +78,11 @@ class LabJSHooks extends BaseHooks
     }
 
     /**
-     * Check if the page contains a survey js
+     * Check if the page contains a lab js
      * @param string $page_keyword
      * The keyword of the page
      * @return boolean
-     * Return true if the page contains survey js or false
+     * Return true if the page contains lab js or false
      */
     private function page_has_lab_js($page_keyword, $id_page = null)
     {
@@ -129,7 +97,7 @@ class LabJSHooks extends BaseHooks
             foreach ($res as $key => $value) {
                 if (isset($value['style_name'])) {
                     if ($value['style_name'] == LABJS_STYLE) {
-                        // the page has surveyJS
+                        // the page has labJS
                         return true;
                     }
                 } else {
@@ -148,9 +116,9 @@ class LabJSHooks extends BaseHooks
      * @return object
      * Return a BaseStyleComponent object
      */
-    public function outputFieldSurveyJSEdit($args)
+    public function outputFieldLabJSEdit($args)
     {
-        return $this->returnSelectSurveyJSField($args, 0);
+        return $this->returnSelectLabJSField($args, 0);
     }
 
     /**
@@ -160,13 +128,13 @@ class LabJSHooks extends BaseHooks
      * @return object
      * Return a BaseStyleComponent object
      */
-    public function outputFieldSurveyJSView($args)
+    public function outputFieldLabJSView($args)
     {
-        return $this->returnSelectSurveyJSField($args, 1);
+        return $this->returnSelectLabJSField($args, 1);
     }
 
     /**
-     * Set csp rules for SurveyJS     
+     * Set csp rules for LabJS     
      * @return string
      * Return csp_rules
      */
@@ -197,14 +165,14 @@ class LabJSHooks extends BaseHooks
     }
 
     /**
-     * Set csp rules for SurveyJS     
+     * Set csp rules for LabJS     
      * @return string
      * Return csp_rules
      */
     public function get_sensible_pages($args)
     {
         $res = $this->execute_private_method($args);
-        $res[] = PAGE_SURVEY_JS_MODE;
+        $res[] = PAGE_LAB_JS_MODE;
         return $res;
     }
 }
