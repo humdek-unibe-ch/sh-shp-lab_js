@@ -19,7 +19,16 @@ function loadExperiment(exp) {
     console.log(exp);
     loadFiles(exp);
     var componentTree = makeComponentTree(exp.components, 'root');
+    componentTree.messageHandlers = {
+        'run': () => console.log('Component running'),
+        'end': () => console.log('Component ended'),
+    };        
+    console.log(componentTree);
     var study = lab.util.fromObject(componentTree);
+    study.on('end', function () {       
+        // Process the data as needed
+        console.log('Experiment data:', lab.data);
+    });
     study.run();
 }
 
