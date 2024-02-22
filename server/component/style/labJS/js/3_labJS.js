@@ -18,18 +18,24 @@ function initLabJS() {
 function loadExperiment(exp) {
     console.log(exp);
     loadFiles(exp);
+    const ds = new lab.data.Store()
     var componentTree = makeComponentTree(exp.components, 'root');
     componentTree.messageHandlers = {
-        'run': () => console.log('Component running'),
-        'end': () => console.log('Component ended'),
-    };        
+        'run': () => console.log('Component running', study.options.datastore.exportJson()),
+        'end': () => console.log('Component ended', study.options.datastore.exportJson()),
+        'epilogue': function anonymous() {console.log('Component epilogue', study.options.datastore.exportJson())}
+    };  
+    componentTree['datastore'] = ds;   
     console.log(componentTree);
     var study = lab.util.fromObject(componentTree);
     study.on('end', function () {       
         // Process the data as needed
-        console.log('Experiment data:', lab.data);
+        console.log('Experiment data:', lab.data, study.options.datastore.exportJson());
     });
     study.run();
+    setTimeout(() => {
+        ds.download();
+    }, 10000);
 }
 
 // Load files if they are used

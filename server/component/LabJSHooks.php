@@ -147,7 +147,7 @@ class LabJSHooks extends BaseHooks
                 if ($this->router->route && in_array($this->router->route['name'], array(PAGE_LAB_JS_MODE))) {
                     // enable only for 2 pages
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
-                }else if ($this->router->route && $this->page_has_lab_js($this->router->route['name'])) {
+                } else if ($this->router->route && $this->page_has_lab_js($this->router->route['name'])) {
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
                 } else if (
                     $this->router->route && in_array($this->router->route['name'], array("cmsSelect", "cmsUpdate")) &&
@@ -174,6 +174,14 @@ class LabJSHooks extends BaseHooks
         $res = $this->execute_private_method($args);
         $res[] = PAGE_LAB_JS_MODE;
         return $res;
+    }
+
+    /**
+     * Get the plugin version
+     */
+    public function get_plugin_db_version($plugin_name = 'lab-js')
+    {
+        return parent::get_plugin_db_version($plugin_name);
     }
 }
 ?>
