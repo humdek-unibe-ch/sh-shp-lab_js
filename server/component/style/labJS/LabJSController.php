@@ -25,6 +25,10 @@ class LabJSController extends BaseController
     public function __construct($model)
     {
         parent::__construct($model);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Decode transmitted data
+            $data = json_decode(file_get_contents('php://input'), true);
+        }
     }
 
     /* Private Methods ********************************************************/

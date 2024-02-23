@@ -1,3 +1,5 @@
+var study;
+
 $(document).ready(function () {
     initLabJS();
 });
@@ -15,26 +17,49 @@ function initLabJS() {
     });
 }
 
+function selfhelpTest(){
+    console.log('selfhelp', study.options.datastore.exportCsv(separator=', '));
+}
+
 function loadExperiment(exp) {
     console.log(exp);
     loadFiles(exp);
     const ds = new lab.data.Store()
     var componentTree = makeComponentTree(exp.components, 'root');
+    componentTree.plugins.push(
+        {
+            "type": "lab.plugins.Transmit",
+            "url": "#",
+            "test_id": 343
+          }
+    );
     componentTree.messageHandlers = {
         'run': () => console.log('Component running', study.options.datastore.exportJson()),
         'end': () => console.log('Component ended', study.options.datastore.exportJson()),
-        'epilogue': function anonymous() {console.log('Component epilogue', study.options.datastore.exportJson())}
+        'render': () => console.log('Component render', study.options.datastore.exportJson()),
+        'show': () => console.log('Component show', study.options.datastore.exportJson()),
+        'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
     };  
+    componentTree.content.forEach(element => {
+        element.messageHandlers = {
+            // 'run': () => console.log('Component running', study.options.datastore.exportJson()),
+            'end': () => console.log('Component ended',element, study.options.datastore.exportJson()),
+            // 'render': () => console.log('Component render', study.options.datastore.exportJson()),
+            // 'show': () => console.log('Component show', study.options.datastore.exportJson()),
+            // 'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
+        };  
+    });
     componentTree['datastore'] = ds;   
     console.log(componentTree);
-    var study = lab.util.fromObject(componentTree);
+    study = lab.util.fromObject(componentTree);
     study.on('end', function () {       
         // Process the data as needed
         console.log('Experiment data:', lab.data, study.options.datastore.exportJson());
     });
     study.run();
     setTimeout(() => {
-        ds.download();
+        // console.log('data', study.options.datastore.exportJson()); // work
+        // ds.download();
     }, 10000);
 }
 
