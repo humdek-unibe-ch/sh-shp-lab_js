@@ -17,8 +17,10 @@ function initLabJS() {
     });
 }
 
-function selfhelpTest(){
-    console.log('selfhelp', study.options.datastore.exportCsv(separator=', '));
+function selfhelpTest() {
+    window.localStorage.setItem('lab-js-state', JSON.stringify(study.options.datastore.state));
+    window.localStorage.setItem('lab-js-data', JSON.stringify(study.options.datastore.data));
+    console.log('selfhelp', study.options.datastore);
 }
 
 function loadExperiment(exp) {
@@ -31,31 +33,51 @@ function loadExperiment(exp) {
             "type": "lab.plugins.Transmit",
             "url": "#",
             "test_id": 343
-          }
+        }
     );
     componentTree.messageHandlers = {
         'run': () => console.log('Component running', study.options.datastore.exportJson()),
         'end': () => console.log('Component ended', study.options.datastore.exportJson()),
         'render': () => console.log('Component render', study.options.datastore.exportJson()),
         'show': () => console.log('Component show', study.options.datastore.exportJson()),
-        'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
-    };  
+        'epilogue': () => { console.log('Component epilogue', study.options.datastore.exportJson()) }
+    };
     componentTree.content.forEach(element => {
         element.messageHandlers = {
             // 'run': () => console.log('Component running', study.options.datastore.exportJson()),
-            'end': () => console.log('Component ended',element, study.options.datastore.exportJson()),
+            'end': () => console.log('Component ended', element, study.options.datastore.data),
             // 'render': () => console.log('Component render', study.options.datastore.exportJson()),
             // 'show': () => console.log('Component show', study.options.datastore.exportJson()),
             // 'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
-        };  
+        };
+        if (typeof element.content === 'object') {
+            element.content.messageHandlers = {
+                // 'run': () => console.log('Component running', study.options.datastore.exportJson()),
+                'end': () => console.log('Component ended', element, study.options.datastore.data),
+                // 'render': () => console.log('Component render', study.options.datastore.exportJson()),
+                // 'show': () => console.log('Component show', study.options.datastore.exportJson()),
+                'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
+            };
+        }
     });
-    componentTree['datastore'] = ds;   
+    componentTree['datastore'] = ds;
     console.log(componentTree);
     study = lab.util.fromObject(componentTree);
-    study.on('end', function () {       
+    study.on('end', function () {
         // Process the data as needed
         console.log('Experiment data:', lab.data, study.options.datastore.exportJson());
     });
+    var state = window.localStorage.getItem('lab-js-state');
+    var data = window.localStorage.getItem('lab-js-data');
+    if(state){
+        state = JSON.parse(state);
+    }
+    if(data){
+        data = JSON.parse(data);
+    }
+    study.options.datastore.state = state;
+    study.options.datastore.data = data;
+    console.log(study.options.datastore);
     study.run();
     setTimeout(() => {
         // console.log('data', study.options.datastore.exportJson()); // work
