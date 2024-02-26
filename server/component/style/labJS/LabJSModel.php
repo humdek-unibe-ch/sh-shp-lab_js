@@ -136,34 +136,12 @@ class LabJSModel extends StyleModel
 
     private function prepare_data($data)
     {
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                // this is array and we have to rework it
-                if ($value === array_values($value)) {
-                    // The array is indexed with numerical keys
-                    if (is_array($value[0]) && isset($value[0]['type'])) {
-                        // File upload, for now do not store it
-                        unset($data[$key]); // remove the file upload; it is saved in the whole json for now
-                    } else if (is_array($value[0]) && $value[0] !== array_values($value[0])) {
-                        // this questions is panel with some repetition
-                        $data[$key] = json_encode($value); // encode the data as json
-                    } else {
-                        $data[$key] = implode(',', $value);
-                    }
-                } else {
-                    // add all children directly in the data        
-                    foreach ($value as $val_key => $val_value) {
-                        if (is_array($val_value)) {
-                            $data[$key . "_" . $val_key] = json_encode($val_value); // the value is array, save it as json
-                        } else {
-                            $data[$key . "_" . $val_key] = $val_value;
-                        }
-                    }
-                    unset($data[$key]); // remove the nested result
-                }
-            }
-        }
-        return $data;
+        $prepared_data = array();
+        $prepared_data['response_id'] = $data['metadata']['labjs_response_id'] ?? null;
+        $prepared_data['trigger_type'] = $data['metadata']['trigger_type'] ?? null;
+        $prepared_data['labjs_generated_id'] = $data['metadata']['labjs_generated_id'] ?? null;
+        $prepared_data['_raw_data'] = json_encode($data['data'] ?? array());
+        return $prepared_data;
     }
 
     /* Public Methods *********************************************************/
@@ -197,12 +175,12 @@ class LabJSModel extends StyleModel
     {
         $data = $this->prepare_data($data);
         $lab = $this->get_raw_lab();
-        if (isset($lab['lab_generated_id']) && isset($data['lab_generated_id']) && $data['lab_generated_id'] == $lab['lab_generated_id']) {
+        if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['trigger_type'])) {
                 if ($data['trigger_type'] == actionTriggerTypes_started) {
-                    $this->user_input->save_external_data(transactionBy_by_user, $data['lab_generated_id'], $data);
+                    $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
                 } else {
-                    $this->user_input->save_external_data(transactionBy_by_user, $data['lab_generated_id'], $data, array(
+                    $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data, array(
                         "response_id" => $data['response_id']
                     ));
                 }

@@ -1,14 +1,17 @@
-var study;
+var labjs_experiment;
+var labjs_response_id
+var labJSConfig;
+var labJSFields;
 
 $(document).ready(function () {
     initLabJS();
 });
 
 function initLabJS() {
-    // Define studyc
+    // Define labjs_experimentc
     $('.selfHelp-lab-js-holder').each(function () {
-        const labJSConfig = $(this).data('lab-js');
-        const labJSFields = $(this).data('lab-js-fields');
+        labJSConfig = $(this).data('lab-js');
+        labJSFields = $(this).data('lab-js-fields');
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
         console.log(labJSConfig);
@@ -17,72 +20,55 @@ function initLabJS() {
     });
 }
 
-function selfhelpTest() {
-    window.localStorage.setItem('lab-js-state', JSON.stringify(study.options.datastore.state));
-    window.localStorage.setItem('lab-js-data', JSON.stringify(study.options.datastore.data));
-    console.log('selfhelp', study.options.datastore);
+function generate_labjs_response_id() {
+    var dateNow = Date.now();
+    const uniqueId = dateNow.toString(36) + Math.random().toString(36).substring(2, 7);
+    return "R_LABJS_" + uniqueId.substring(uniqueId.length - 16);
+}
+
+function saveDataToSelfHelp(trigger_type, extra_data) {
+    // window.localStorage.setItem('lab-js-state', JSON.stringify(labjs_experiment.options.datastore.state));
+    // window.localStorage.setItem('lab-js-data', JSON.stringify(labjs_experiment.options.datastore.data));
+    if (!extra_data) {
+        extra_data = {
+            "trigger_type": trigger_type
+        };
+    } else {
+        extra_data['trigger_type'] = trigger_type;
+    }
+    extra_data['labjs_response_id'] = labjs_response_id;
+    extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
+    console.log(trigger_type);
+    labjs_experiment.options.datastore.transmit("#", extra_data);
 }
 
 function loadExperiment(exp) {
-    console.log(exp);
     loadFiles(exp);
-    const ds = new lab.data.Store()
+    // const ds = new lab.data.Store()
     var componentTree = makeComponentTree(exp.components, 'root');
-    componentTree.plugins.push(
-        {
-            "type": "lab.plugins.Transmit",
-            "url": "#",
-            "test_id": 343
-        }
-    );
-    componentTree.messageHandlers = {
-        'run': () => console.log('Component running', study.options.datastore.exportJson()),
-        'end': () => console.log('Component ended', study.options.datastore.exportJson()),
-        'render': () => console.log('Component render', study.options.datastore.exportJson()),
-        'show': () => console.log('Component show', study.options.datastore.exportJson()),
-        'epilogue': () => { console.log('Component epilogue', study.options.datastore.exportJson()) }
-    };
-    componentTree.content.forEach(element => {
-        element.messageHandlers = {
-            // 'run': () => console.log('Component running', study.options.datastore.exportJson()),
-            'end': () => console.log('Component ended', element, study.options.datastore.data),
-            // 'render': () => console.log('Component render', study.options.datastore.exportJson()),
-            // 'show': () => console.log('Component show', study.options.datastore.exportJson()),
-            // 'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
-        };
-        if (typeof element.content === 'object') {
-            element.content.messageHandlers = {
-                // 'run': () => console.log('Component running', study.options.datastore.exportJson()),
-                'end': () => console.log('Component ended', element, study.options.datastore.data),
-                // 'render': () => console.log('Component render', study.options.datastore.exportJson()),
-                // 'show': () => console.log('Component show', study.options.datastore.exportJson()),
-                'epilogue': () => {console.log('Component epilogue', study.options.datastore.exportJson())}
-            };
-        }
-    });
-    componentTree['datastore'] = ds;
-    console.log(componentTree);
-    study = lab.util.fromObject(componentTree);
-    study.on('end', function () {
-        // Process the data as needed
-        console.log('Experiment data:', lab.data, study.options.datastore.exportJson());
-    });
-    var state = window.localStorage.getItem('lab-js-state');
-    var data = window.localStorage.getItem('lab-js-data');
-    if(state){
-        state = JSON.parse(state);
-    }
-    if(data){
-        data = JSON.parse(data);
-    }
-    study.options.datastore.state = state;
-    study.options.datastore.data = data;
-    console.log(study.options.datastore);
-    study.run();
-    setTimeout(() => {
-        // console.log('data', study.options.datastore.exportJson()); // work
-        // ds.download();
-    }, 10000);
+    // componentTree.plugins.push(
+    //     {
+    //         "type": "lab.plugins.Transmit",
+    //         "url": "#",
+    //         "test_id": 343
+    //     }
+    // );
+    // componentTree['datastore'] = ds;
+    // console.log(componentTree);
+    labjs_experiment = lab.util.fromObject(componentTree);
+    // var state = window.localStorage.getItem('lab-js-state');
+    // var data = window.localStorage.getItem('lab-js-data');
+    // if (state) {
+    //     state = JSON.parse(state);
+    // }
+    // if (data) {
+    //     data = JSON.parse(data);
+    // }
+    // labjs_experiment.options.datastore.state = state;
+    // labjs_experiment.options.datastore.data = data;
+    // console.log(labjs_experiment.options.datastore);
+    labjs_response_id = generate_labjs_response_id();
+    labjs_experiment.run();
 }
 
 // Load files if they are used

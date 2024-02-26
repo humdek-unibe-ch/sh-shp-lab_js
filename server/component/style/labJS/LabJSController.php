@@ -26,8 +26,11 @@ class LabJSController extends BaseController
     {
         parent::__construct($model);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Decode transmitted data
+            // Decode transmitted data            
             $data = json_decode(file_get_contents('php://input'), true);
+            if (isset($data['metadata']['trigger_type'])) {
+                $this->model->save_lab($data);
+            }
         }
     }
 
