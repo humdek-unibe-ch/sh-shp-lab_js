@@ -28,7 +28,8 @@ function generate_labjs_response_id() {
 
 function saveDataToSelfHelp(trigger_type, extra_data) {
     // window.localStorage.setItem('lab-js-state', JSON.stringify(labjs_experiment.options.datastore.state));
-    // window.localStorage.setItem('lab-js-data', JSON.stringify(labjs_experiment.options.datastore.data));
+    // window.localStorage.setItem('lab-js-state', Flatted.stringify(labjs_experiment));
+    // console.log('flatted', Flatted.toJSON(labjs_experiment));
     if (!extra_data) {
         extra_data = {
             "trigger_type": trigger_type
@@ -40,6 +41,7 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
     console.log(trigger_type);
     labjs_experiment.options.datastore.transmit("#", extra_data);
+    // labjs_experiment.run();
 }
 
 function loadExperiment(exp) {
@@ -331,9 +333,9 @@ const awaitRegex = /(^|[^\w])await\s+/m
 // The eval call here is needed to circumvent CRA's polyfills,
 // and probably can be removed at some later point
 // eslint-disable-next-line no-new-func
-const AsyncFunction = new Function(
-    'return Object.getPrototypeOf(async function(){}).constructor'
-)()
+// const AsyncFunction = new Function(
+//     'return Object.getPrototypeOf(async function(){}).constructor'
+// )()
 
 const adaptiveFunction = code =>
     // Build an async function if await appears in the source

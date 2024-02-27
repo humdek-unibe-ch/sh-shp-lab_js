@@ -156,6 +156,7 @@ class LabJSView extends StyleView
             if (DEBUG) {
                 $local = array(
                     __DIR__ . "/js/1_lodash.min.js",
+                    __DIR__ . "/js/1_flatted.min.js",
                     __DIR__ . "/js/2_lab.js",
                     __DIR__ . "/js/3_labJS.js"
                 );
