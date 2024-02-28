@@ -223,7 +223,7 @@ class ModuleLabJSView extends BaseView
                     // __DIR__ . "/css/lab.css"
                 );
             } else {
-                $local = array(__DIR__ . "/../../../../lab-js/css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
+                $local = array(__DIR__ . "/../../../css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
             }
         }
         return parent::get_css_includes($local);

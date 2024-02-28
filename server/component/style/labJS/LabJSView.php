@@ -161,7 +161,7 @@ class LabJSView extends StyleView
                     __DIR__ . "/js/3_labJS.js"
                 );
             } else {
-                $local = array(__DIR__ . "/../../../../../lab-js/js/ext/lab-js.min.js?v=" . rtrim(shell_exec("git describe --tags")));
+                $local = array(__DIR__ . "/../../../../js/ext/lab-js.min.js?v=" . rtrim(shell_exec("git describe --tags")));
             }
         }
         return parent::get_js_includes($local);
@@ -182,7 +182,7 @@ class LabJSView extends StyleView
                     __DIR__ . "/css/lab.css"
                 );
             } else {
-                $local = array(__DIR__ . "/../../../../../lab-js/css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
+                $local = array(__DIR__ . "/../../../../css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
             }
         }
         return parent::get_css_includes($local);
