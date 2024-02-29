@@ -50,9 +50,10 @@ function loadExperiment(exp) {
     var componentTree = makeComponentTree(exp.components, 'root');
     // componentTree.plugins.push(
     //     {
-    //         "type": "lab.plugins.Transmit",
-    //         "url": "#",
-    //         "test_id": 343
+    //         "type": "fullscreen",
+    //         "message": "mes",
+    //         "hint": "hin",
+    //         "path": "lab.plugins.Fullscreen"
     //     }
     // );
     // componentTree['datastore'] = ds;

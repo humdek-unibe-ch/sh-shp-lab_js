@@ -76,6 +76,7 @@
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
+
 .overlay .modal {
     margin: 24px auto;
     margin: var(--padding-internal) auto;
@@ -87,6 +88,29 @@
     border-radius: 4px;
     border-radius: var(--border-radius-content);
     box-shadow: 0 0 5px rgba(140, 140, 140, 0.25);
+    /* Layout */
+    --width-container: 900px;
+    --width-min-container: 320px;
+    --height-min-header-footer: 8vh;
+    --padding-internal: 24px;
+    --border-radius-container: 5px;
+    --border-radius-content: 4px;
+    /* Typography */
+    --font-family: "Arial", sans-serif;
+    --font-family-mono: Droid Mono, Menlo, Consolas, monospace;
+    --font-size: 18px;
+    --line-height: 1.45;
+    /* (line height is specified in em so that it adapts to varying font sizes) */
+    --paragraph-margin-vertical: var(--font-size);
+    /* Colors */
+    --color-text: black;
+    --color-background: white;
+    --color-border: #e5e5e5;
+    --color-border-internal: #efefef;
+    --color-gray-background: #f8f8f8;
+    --color-gray-content: #8d8d8d;
+    position: unset;
+    height: auto;
 }
 
 .selfHelp-lab-js header,
@@ -259,101 +283,101 @@
     width: 100%;
 }
 
-.selfHelp-lab-js .w-s {
+.w-s {
     width: 100%;
     max-width: 320px;
     max-width: var(--width-min-container);
 }
 
-.selfHelp-lab-js .w-m {
+.w-m {
     width: 100%;
     max-width: calc(1.5 * 320px);
     max-width: calc(1.5 * var(--width-min-container));
 }
 
-.selfHelp-lab-js .w-l {
+.w-l {
     width: 100%;
     max-width: calc(2 * 320px);
     max-width: calc(2 * var(--width-min-container));
 }
 
 /* Block alignment based on flexbox */
-.selfHelp-lab-js .content-vertical-top,
-.selfHelp-lab-js .content-vertical-center,
-.selfHelp-lab-js .content-vertical-bottom,
-.selfHelp-lab-js .content-horizontal-left,
-.selfHelp-lab-js .content-horizontal-center,
-.selfHelp-lab-js .content-horizontal-right,
-.selfHelp-lab-js .content-horizontal-space-between,
-.selfHelp-lab-js .content-vertical-space-between,
-.selfHelp-lab-js .content-horizontal-space-around,
-.selfHelp-lab-js .content-vertical-space-around {
+.content-vertical-top,
+.content-vertical-center,
+.content-vertical-bottom,
+.content-horizontal-left,
+.content-horizontal-center,
+.content-horizontal-right,
+.content-horizontal-space-between,
+.content-vertical-space-between,
+.content-horizontal-space-around,
+.content-vertical-space-around {
     display: -webkit-box;
     display: flex;
 }
 
-.selfHelp-lab-js .content-vertical-top {
+.content-vertical-top {
     -webkit-box-align: start;
     align-items: flex-start;
 }
 
-.selfHelp-lab-js .content-vertical-center {
+.content-vertical-center {
     -webkit-box-align: center;
     align-items: center;
 }
 
-.selfHelp-lab-js .content-vertical-bottom {
+.content-vertical-bottom {
     -webkit-box-align: end;
     align-items: flex-end;
 }
 
-.selfHelp-lab-js .content-horizontal-left {
+.content-horizontal-left {
     -webkit-box-pack: start;
     justify-content: flex-start;
 }
 
-.selfHelp-lab-js .content-horizontal-center {
+.content-horizontal-center {
     -webkit-box-pack: center;
     justify-content: center;
 }
 
-.selfHelp-lab-js .content-horizontal-right {
+.content-horizontal-right {
     -webkit-box-pack: end;
     justify-content: flex-end;
 }
 
-.selfHelp-lab-js .content-horizontal-space-between,
-.selfHelp-lab-js .content-vertical-space-between {
+.content-horizontal-space-between,
+.content-vertical-space-between {
     -webkit-box-pack: justify;
     justify-content: space-between;
 }
 
-.selfHelp-lab-js .content-horizontal-space-around,
-.selfHelp-lab-js .content-vertical-space-around {
+.content-horizontal-space-around,
+.content-vertical-space-around {
     justify-content: space-around;
 }
 
-.selfHelp-lab-js .content-vertical-space-around,
-.selfHelp-lab-js .content-vertical-space-between {
+.content-vertical-space-around,
+.content-vertical-space-between {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     flex-direction: column;
 }
 
-.selfHelp-lab-js .content-vertical-space-between.content-horizontal-right,
-.selfHelp-lab-js .content-vertical-space-around.content-horizontal-right {
+.content-vertical-space-between.content-horizontal-right,
+.content-vertical-space-around.content-horizontal-right {
     -webkit-box-align: start;
     align-items: flex-start;
 }
 
-.selfHelp-lab-js .content-vertical-space-between.content-horizontal-center,
-.selfHelp-lab-js .content-vertical-space-around.content-horizontal-center {
+.content-vertical-space-between.content-horizontal-center,
+.content-vertical-space-around.content-horizontal-center {
     -webkit-box-align: center;
     align-items: center;
 }
 
-.selfHelp-lab-js .content-vertical-space-between.content-horizontal-right,
-.selfHelp-lab-js .content-vertical-space-around.content-horizontal-right {
+.content-vertical-space-between.content-horizontal-right,
+.content-vertical-space-around.content-horizontal-right {
     -webkit-box-align: end;
     align-items: flex-end;
 }
@@ -695,5 +719,3 @@
     padding-top: 24px;
     top: -8px;
 }
-
-
