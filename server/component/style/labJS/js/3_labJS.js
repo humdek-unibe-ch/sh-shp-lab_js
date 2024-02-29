@@ -48,14 +48,17 @@ function loadExperiment(exp) {
     loadFiles(exp);
     // const ds = new lab.data.Store()
     var componentTree = makeComponentTree(exp.components, 'root');
-    // componentTree.plugins.push(
-    //     {
-    //         "type": "fullscreen",
-    //         "message": "mes",
-    //         "hint": "hin",
-    //         "path": "lab.plugins.Fullscreen"
-    //     }
-    // );
+
+    // adjust plugins    
+    Object.entries(exp.components).forEach(([keyComp, comp]) => {
+        if (comp.plugins) {
+            Object.entries(comp.plugins).forEach(([keyPlugin, plugin]) => {
+                if (plugin && plugin.type == 'fullscreen') {
+                    plugin['path'] = 'lab.plugins.Fullscreen';
+                }
+            });
+        }
+    });
     // componentTree['datastore'] = ds;
     // console.log(componentTree);
     labjs_experiment = lab.util.fromObject(componentTree);
