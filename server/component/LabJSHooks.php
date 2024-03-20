@@ -105,6 +105,7 @@ class LabJSHooks extends BaseHooks
                 }
             }
         }
+        return false;
     }
 
     /* Public Methods *********************************************************/
