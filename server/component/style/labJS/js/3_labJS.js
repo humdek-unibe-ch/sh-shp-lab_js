@@ -3,10 +3,18 @@ var labjs_response_id
 var labJSConfig;
 var labJSFields;
 
+/**
+ * Initializes the LabJS experiment.
+ * This function is called when the document is ready. It retrieves LabJS configurations and fields
+ * from elements with the class 'selfHelp-lab-js-holder', then loads and runs the experiment.
+ */
 $(document).ready(function () {
     initLabJS();
 });
 
+/**
+ * Initializes the LabJS experiment based on the configurations obtained from elements with the class 'selfHelp-lab-js-holder'.
+ */
 function initLabJS() {
     // Define labjs_experimentc
     $('.selfHelp-lab-js-holder').each(function () {
@@ -14,22 +22,26 @@ function initLabJS() {
         labJSFields = $(this).data('lab-js-fields');
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
-        console.log(labJSConfig);
-        console.log(labJSFields);
         loadExperiment(labJSConfig);
     });
 }
 
+/**
+ * Generates a unique identifier for LabJS responses.
+ * @returns {string} A unique LabJS response identifier.
+ */
 function generate_labjs_response_id() {
     var dateNow = Date.now();
     const uniqueId = dateNow.toString(36) + Math.random().toString(36).substring(2, 7);
     return "R_LABJS_" + uniqueId.substring(uniqueId.length - 16);
 }
 
+/**
+ * Saves data to the LabJS datastore for the Self-Help application.
+ * @param {string} trigger_type - The type of trigger.
+ * @param {object} [extra_data] - Additional data to save.
+ */
 function saveDataToSelfHelp(trigger_type, extra_data) {
-    // window.localStorage.setItem('lab-js-state', JSON.stringify(labjs_experiment.options.datastore.state));
-    // window.localStorage.setItem('lab-js-state', Flatted.stringify(labjs_experiment));
-    // console.log('flatted', Flatted.toJSON(labjs_experiment));
     if (!extra_data) {
         extra_data = {
             "trigger_type": trigger_type
@@ -41,12 +53,14 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
     console.log(trigger_type, extra_data);
     labjs_experiment.options.datastore.transmit("#", extra_data);
-    // labjs_experiment.run();
 }
 
+/**
+ * Loads the LabJS experiment using the provided configuration.
+ * @param {object} exp - The LabJS experiment configuration.
+ */
 function loadExperiment(exp) {
     loadFiles(exp);
-    // const ds = new lab.data.Store()
     var componentTree = makeComponentTree(exp.components, 'root');
 
     // adjust plugins    
@@ -59,25 +73,15 @@ function loadExperiment(exp) {
             });
         }
     });
-    // componentTree['datastore'] = ds;
-    // console.log(componentTree);
     labjs_experiment = lab.util.fromObject(componentTree);
-    // var state = window.localStorage.getItem('lab-js-state');
-    // var data = window.localStorage.getItem('lab-js-data');
-    // if (state) {
-    //     state = JSON.parse(state);
-    // }
-    // if (data) {
-    //     data = JSON.parse(data);
-    // }
-    // labjs_experiment.options.datastore.state = state;
-    // labjs_experiment.options.datastore.data = data;
-    // console.log(labjs_experiment.options.datastore);
     labjs_response_id = generate_labjs_response_id();
     labjs_experiment.run();
 }
 
-// Load files if they are used
+/**
+ * Loads files used in the LabJS experiment if they are specified in the configuration.
+ * @param {object} obj - The LabJS experiment configuration.
+ */
 function loadFiles(obj) {
     for (let keyComp in obj.components) {
         var comp = obj.components[keyComp];
@@ -89,6 +93,7 @@ function loadFiles(obj) {
         };
     }
 }
+
 
 // Generic grid processing
 const processGrid = (grid, colnames = null, types = undefined) =>
