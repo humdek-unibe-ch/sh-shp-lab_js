@@ -59,12 +59,7 @@ class ModuleLabJSView extends BaseView
             require __DIR__ . "/tpl_moduleLabJS.php";
         } else {
             require __DIR__ . "/tpl_moduleLabJS_Alerts.php";
-            $card_title = '<span>Lab JS </span>'  . (isset($this->lab['lab_generated_id']) ? ('<div> <code>&nbsp;' . $this->lab['lab_generated_id'] . '</code></div>') : '');
-            if (isset($this->lab['published']) && $this->lab['published']) {
-                $card_title = $card_title . '<span class="text-right flex-grow-1">Published at: <code id="lab-js-publish-at">' . $this->lab['published_at'] . '</code> </span>';
-            } else {
-                $card_title = $card_title . '<span class="text-right flex-grow-1"><code>Not published yet</code> </span>';
-            }
+            $card_title = '<span>Lab JS </span>'  . (isset($this->lab['labjs_generated_id']) ? ('<div> <code>&nbsp;' . $this->lab['labjs_generated_id'] . '</code></div>') : '');
             $labJSHolderChildren = array(
                 $this->output_check_multiple_users(true),
                 new   BaseStyleComponent("div", array(
@@ -78,13 +73,6 @@ class ModuleLabJSView extends BaseView
                                     "url" => $this->model->get_link_url("moduleLabJS"),
                                     "type" => "secondary",
                                 )),
-                                // new BaseStyleComponent("button", array(
-                                //     "label" => "Publish",
-                                //     "id" => "lab-js-publish",
-                                //     "url" => "#",
-                                //     "type" => "warning",
-                                //     "css" => "ml-3 " . (isset($this->lab['config']) && $this->lab['config'] == $this->lab['published'] ? 'disabled' : '')
-                                // )),
                                 new BaseStyleComponent("button", array(
                                     "label" => "Dashboard",
                                     "url" => $this->model->get_link_url("moduleLabJSDashboard", array("lid" => $this->lid)),
@@ -104,6 +92,10 @@ class ModuleLabJSView extends BaseView
                             "id" => "lab-js-delete-btn",
                             "url" => $this->model->get_link_url(PAGE_LAB_JS_MODE, array("mode" => DELETE, "lid" => $this->lid)),
                             "type" => "danger",
+                            "confirmation_title" => "Delete LabJS",
+                            "label_cancel" => "Cancel",
+                            "label_continue" => "Delete",
+                            "label_message" => "Are you sure that you want to delete LabJS: <code>" . ($this->lab ? $this->lab['labjs_generated_id'] : "") . "</code>?",
                         ))
                     )
                 )),
@@ -148,12 +140,6 @@ class ModuleLabJSView extends BaseView
                                 ))
                             ),
                         ))
-                        // new BaseStyleComponent("template", array(
-                        //     "path" => __DIR__ . "/tpl_moduleLabJSBuilder.php",
-                        //     "items" => array(
-                        //         "lab" => $this->lab
-                        //     )
-                        // ))
                     )
                 ))
             );
@@ -191,13 +177,6 @@ class ModuleLabJSView extends BaseView
     {
         if (empty($local)) {
             $local = array(
-                // __DIR__ . "/js/1_knockout-latest.js",
-                // __DIR__ . "/js/2_lab.core.min.js",
-                // __DIR__ . "/js/3_lab-knockout-ui.min.js",
-                // __DIR__ . "/js/4_lab-creator-core.min.js",
-                // __DIR__ . "/js/5_lab-creator-knockout.min.js",
-                // __DIR__ . "/js/6_lab-creator-core.i18n.min.js",
-                // __DIR__ . "/js/7_lab.i18n.min.js",
                 __DIR__ . "/js/lab.js",
             );
         }
@@ -215,13 +194,7 @@ class ModuleLabJSView extends BaseView
     {
         if (empty($local)) {
             if (DEBUG) {
-                $local = array(
-                    // __DIR__ . "/css/lab.min.css",
-                    // __DIR__ . "/../style/labJS/css/modern.min.css",
-                    // __DIR__ . "/../style/labJS/css/defaultV2.min.css",
-                    // __DIR__ . "/css/lab-creator-core.min.css",
-                    // __DIR__ . "/css/lab.css"
-                );
+                $local = array();
             } else {
                 $local = array(__DIR__ . "/../../../css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
             }
