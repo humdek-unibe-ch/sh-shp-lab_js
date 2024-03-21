@@ -24,29 +24,9 @@ class LabJSView extends StyleView
     private $lab;
 
     /**
-     * Markdown text that is shown if the lab is done and it can be filled only once per schedule.
-     */
-    private $label_lab_done;
-
-    /**
-     * Markdown text that is shown if the lab is not active right now.
-     */
-    private $label_lab_not_active;
-
-    /**
-     * If true the lab is restarted on refresh
-     */
-    private $restart_on_refresh;
-
-    /**
      * If it is set it redirects to this link after the lab is completed
      */
     private $redirect_at_end;
-
-    /**
-     * If set and the value is higher than 0, it will auto save the lab on interval based on the entered value.
-     */
-    private $auto_save_interval;
 
 
     /* Constructors ***********************************************************/
@@ -66,11 +46,7 @@ class LabJSView extends StyleView
         if ($this->sid > 0) {
             $this->lab = $this->model->get_lab();
         }
-        $this->label_lab_done = $this->model->get_db_field('label_lab_done', '');
-        $this->label_lab_not_active = $this->model->get_db_field('label_lab_not_active', '');
-        $this->restart_on_refresh = $this->model->get_db_field('restart_on_refresh', '');
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
-        $this->auto_save_interval = $this->model->get_db_field('auto_save_interval', 0);
     }
 
 
@@ -81,43 +57,16 @@ class LabJSView extends StyleView
      */
     public function output_content()
     {
-        if ($this->model->is_lab_active()) {
-            if ($this->model->is_lab_done()) {
-                if ($this->label_lab_done != '') {
-                    $alert = new BaseStyleComponent("alert", array(
-                        "type" => "danger",
-                        "is_dismissable" => false,
-                        "children" => array(new BaseStyleComponent("markdown", array(
-                            "text_md" => $this->label_lab_done,
-                        )))
-                    ));
-                    $alert->output_content();
-                }
-            } else {
-                $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
-                $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
-                $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
-                $lab_fields = array(
-                    "restart_on_refresh" => boolval($this->restart_on_refresh),
-                    "redirect_at_end" => $redirect_at_end,
-                    "auto_save_interval" => $this->auto_save_interval,
-                    "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null
-                );
-                $lab_fields = json_encode($lab_fields);
-                require __DIR__ . "/tpl_labJS.php";
-            }
-        } else {
-            if ($this->label_lab_not_active != '') {
-                $alert = new BaseStyleComponent("alert", array(
-                    "type" => "danger",
-                    "is_dismissable" => false,
-                    "children" => array(new BaseStyleComponent("markdown", array(
-                        "text_md" => $this->label_lab_not_active,
-                    )))
-                ));
-                $alert->output_content();
-            }
-        }
+
+        $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
+        $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
+        $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
+        $lab_fields = array(
+            "redirect_at_end" => $redirect_at_end,
+            "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null
+        );
+        $lab_fields = json_encode($lab_fields);
+        require __DIR__ . "/tpl_labJS.php";
     }
 
     public function output_content_mobile()
@@ -131,15 +80,6 @@ class LabJSView extends StyleView
         $style['alert'] = '';
         $style['show_lab'] = true;
         $style['labjs_generated_id'] = $this->lab['labjs_generated_id'];
-        if ($this->model->is_lab_active()) {
-            if ($this->model->is_lab_done()) {
-                $style['alert'] = $this->label_lab_done;
-                $style['show_lab'] = false;
-            }
-        } else {
-            $style['alert'] = $this->label_lab_not_active;
-            $style['show_lab'] = false;
-        }
         return $style;
     }
 
