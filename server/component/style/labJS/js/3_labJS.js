@@ -51,7 +51,6 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     }
     extra_data['labjs_response_id'] = labjs_response_id;
     extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
-    console.log(trigger_type, extra_data);
     labjs_experiment.options.datastore.transmit("#", extra_data);
 }
 
@@ -359,14 +358,3 @@ const adaptiveFunction = code =>
         ? new AsyncFunction(code)
         // eslint-disable-next-line no-new-func
         : new Function(code)
-
-
-class Logger {
-    constructor(options) {
-        this.title = options.title
-    }
-
-    handle(context, event) {
-        console.log(`Component ${this.title} received ${event}`)
-    }
-}

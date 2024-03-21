@@ -21,6 +21,15 @@ if (typeof saveDataToSelfHelp === 'function') {
 }
  ```
 
+# Useful LabJS code snippets
+ - prevent `reload` - add the code in the beginning to initialize an event  listener for reloading
+```
+window.addEventListener('beforeunload', function(event) {
+    event.preventDefault(); // Prevents the default window unload behavior (page reload)
+    // Your beforeunload handling code here
+});
+```  
+
 # Requirements
 
  - SelfHelp v6.9.2+

@@ -202,7 +202,7 @@ class LabJSModel extends StyleModel
                     $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
                 } else {
                     $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data, array(
-                        "response_id" => $data['response_id']
+                        "labjs_response_id" => $data['labjs_response_id']
                     ));
                 }
             }
