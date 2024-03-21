@@ -196,7 +196,7 @@ class ModuleLabJSView extends BaseView
             if (DEBUG) {
                 $local = array();
             } else {
-                $local = array(__DIR__ . "/../../../css/ext/lab-js.min.css?v=" . rtrim(shell_exec("git describe --tags")));
+                $local = array(__DIR__ . "/../../../css/ext/lab-js.min.css?v=" . $this->model->get_services()->get_db()->get_git_version(__DIR__));
             }
         }
         return parent::get_css_includes($local);

@@ -32,4 +32,4 @@ window.addEventListener('beforeunload', function(event) {
 
 # Requirements
 
- - SelfHelp v6.9.2+
+ - SelfHelp v6.12.1+
