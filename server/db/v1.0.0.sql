@@ -56,3 +56,21 @@ INSERT IGNORE INTO `fieldType` (`id`, `name`, `position`) VALUES (NULL, 'select-
 INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`) VALUES (NULL, 'lab-js', get_field_type_id('select-lab-js'), '0');
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) 
 VALUES (get_style_id('labJS'), get_field_id('lab-js'), '', 'Select a lab js experimetn. The experiment first should be created in module LabJS.');
+
+-- add field close_modal_at_end to style labJS
+INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`) VALUES (NULL, 'close_modal_at_end', get_field_type_id('checkbox'), '0');
+INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) VALUES (get_style_id('labJS'), get_field_id('close_modal_at_end'), 0, '`Only for mobile` - if selected the modal form will be closed once the survey is done');
+
+-- add field redirect_at_end to style labJS
+INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`) VALUES (NULL, 'redirect_at_end', get_field_type_id('text'), '0');
+INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) VALUES (get_style_id('labJS'), get_field_id('redirect_at_end'), null, 'Redirect `url` after the execution
+Use the following syntax to achieve this:
+ - link to back (browser functionality) `#back`
+ - link to the last unique visited page `#last_user_page`
+ - link to asset `%asset_name`
+ - link to page `#page_name`
+ - link to anchor on page `#page_name#wrapper_name`
+ - link to root_section on a nav_page `#nav_page_name/nav_section_name`
+ - link to anchor on root_section on nav_page `#nav_page_name/nav_section_name#wrapper_name`
+ 
+Please use relative paths unless the `url` is an external link.');
