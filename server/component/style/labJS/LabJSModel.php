@@ -107,7 +107,7 @@ class LabJSModel extends StyleModel
 
     /**
      * Check if the lab is already done by the user
-     * @retval boolean
+     * @return boolean
      * true if it is already done, false if not
      */
     private function is_lab_done_by_user()
@@ -121,7 +121,7 @@ class LabJSModel extends StyleModel
 
     /**
      * Check if the lab is already done by the user for the selected period
-     * @retval boolean
+     * @return boolean
      * true if it is already done, false if not
      */
     private function is_lab_done_by_user_for_schedule()
@@ -134,12 +134,33 @@ class LabJSModel extends StyleModel
         return $res;
     }
 
+    /**
+     * Prepare the data for processing.
+     *
+     * This function prepares the provided data for further processing. It checks each key in the data array
+     * and formats it accordingly. If the key is one of 'labjs_response_id', 'trigger_type', or 'labjs_generated_id',
+     * it keeps the original value. If the value is an array, it converts it to JSON format and prefixes the key
+     * with 'extra_data_'. If the value is not an array, it keeps the original value and prefixes the key with 'extra_data_'.
+     * Additionally, it stores the original data in a key '_raw_data' in JSON format under the assumption that the original data
+     * contains a key named 'data'.
+     *
+     * @param array $data The data to prepare.
+     * @return array The prepared data.
+     */
     private function prepare_data($data)
     {
         $prepared_data = array();
-        $prepared_data['response_id'] = $data['metadata']['labjs_response_id'] ?? null;
-        $prepared_data['trigger_type'] = $data['metadata']['trigger_type'] ?? null;
-        $prepared_data['labjs_generated_id'] = $data['metadata']['labjs_generated_id'] ?? null;
+        foreach ($data['metadata'] as $key => $value) {
+            if (in_array($key, ['labjs_response_id', 'trigger_type', 'labjs_generated_id'])) {
+                $prepared_data[$key] = $value;
+            } else {
+                if (is_array($value)) {
+                    $prepared_data['extra_data_' . $key] = json_encode($value);
+                } else {
+                    $prepared_data['extra_data_' . $key] = $value;
+                }
+            }
+        }
         $prepared_data['_raw_data'] = json_encode($data['data'] ?? array());
         return $prepared_data;
     }
