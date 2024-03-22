@@ -63,7 +63,7 @@ INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `
 
 -- add field redirect_at_end to style labJS
 INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`) VALUES (NULL, 'redirect_at_end', get_field_type_id('text'), '0');
-INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) VALUES (get_style_id('labJS'), get_field_id('redirect_at_end'), null, 'Redirect `url` after the execution
+INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`) VALUES (get_style_id('labJS'), get_field_id('redirect_at_end'), null, 'Redirect to `url` after the experiment is saved with status `finished` with function `saveDataToSelfHelp`.
 Use the following syntax to achieve this:
  - link to back (browser functionality) `#back`
  - link to the last unique visited page `#last_user_page`
