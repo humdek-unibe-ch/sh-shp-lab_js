@@ -22,6 +22,7 @@ function initLabJS() {
         labJSFields = $(this).data('lab-js-fields');
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
+        console.log(labJSFields);
         loadExperiment(labJSConfig);
     });
 }
@@ -51,7 +52,12 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     }
     extra_data['labjs_response_id'] = labjs_response_id;
     extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
+    extra_data['redirect_at_end'] = labJSFields['redirect_at_end'];
     labjs_experiment.options.datastore.transmit("#", extra_data);
+    if (extra_data['trigger_type'] == 'finished' && extra_data['redirect_at_end'] && extra_data['redirect_at_end'] != '') {
+        // redirect on finish and if redirect url is set
+        window.location.href = extra_data['redirect_at_end'];
+    }    
 }
 
 /**
