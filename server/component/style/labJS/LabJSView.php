@@ -77,8 +77,6 @@ class LabJSView extends StyleView
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
         $style['redirect_at_end']['content'] = str_replace(BASE_PATH, "", $redirect_at_end);
         $style['lab_json'] = $this->lab['config'] ? json_decode($this->lab['config']) : [];
-        $style['alert'] = '';
-        $style['show_lab'] = true;
         $style['labjs_generated_id'] = $this->lab['labjs_generated_id'];
         return $style;
     }
@@ -96,7 +94,6 @@ class LabJSView extends StyleView
             if (DEBUG) {
                 $local = array(
                     __DIR__ . "/js/1_lodash.min.js",
-                    __DIR__ . "/js/1_flatted.min.js",
                     __DIR__ . "/js/2_lab.js",
                     __DIR__ . "/js/3_labJS.js"
                 );

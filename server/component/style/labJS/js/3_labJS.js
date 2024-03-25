@@ -22,7 +22,6 @@ function initLabJS() {
         labJSFields = $(this).data('lab-js-fields');
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
-        console.log(labJSFields);
         loadExperiment(labJSConfig);
     });
 }
@@ -347,9 +346,9 @@ const awaitRegex = /(^|[^\w])await\s+/m
 // The eval call here is needed to circumvent CRA's polyfills,
 // and probably can be removed at some later point
 // eslint-disable-next-line no-new-func
-// const AsyncFunction = new Function(
-//     'return Object.getPrototypeOf(async function(){}).constructor'
-// )()
+const AsyncFunction = new Function(
+    'return Object.getPrototypeOf(async function(){}).constructor'
+)()
 
 const adaptiveFunction = code =>
     // Build an async function if await appears in the source
