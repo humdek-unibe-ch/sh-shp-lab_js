@@ -152,9 +152,9 @@ class LabJSModel extends StyleModel
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['trigger_type'])) {
                 if ($data['trigger_type'] == actionTriggerTypes_started) {
-                    $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
+                   return $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
                 } else {
-                    $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data, array(
+                    return $this->user_input->save_external_data(transactionBy_by_user, $data['labjs_generated_id'], $data, array(
                         "labjs_response_id" => $data['labjs_response_id']
                     ));
                 }
