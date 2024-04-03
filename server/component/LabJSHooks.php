@@ -152,7 +152,7 @@ class LabJSHooks extends BaseHooks
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
                 } else if (
                     $this->router->route && in_array($this->router->route['name'], array("cmsSelect", "cmsUpdate")) &&
-                    isset($this->router->route['params']['pid']) && $this->page_has_lab_js($this->router->route['name'], $this->router->route['params']['pid'])
+                    isset($this->router->route['params']['pid'])
                 ) {
                     $value = str_replace("'unsafe-inline'", "'unsafe-inline' 'unsafe-eval'", $value);
                 }
