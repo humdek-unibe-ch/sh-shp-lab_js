@@ -56,7 +56,7 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     if (extra_data['trigger_type'] == 'finished' && extra_data['redirect_at_end'] && extra_data['redirect_at_end'] != '') {
         // redirect on finish and if redirect url is set
         window.location.href = extra_data['redirect_at_end'];
-    }    
+    }
 }
 
 /**
@@ -363,3 +363,110 @@ const adaptiveFunction = code =>
         ? new AsyncFunction(code)
         // eslint-disable-next-line no-new-func
         : new Function(code)
+
+const slugify = (string, opts) => {
+    const locales = {
+        // http://www.eki.ee/wgrs/rom1_bg.pdf
+        bg: { Й: 'Y', й: 'y', X: 'H', x: 'h', Ц: 'Ts', ц: 'ts', Щ: 'Sht', щ: 'sht', Ъ: 'A', ъ: 'a', Ь: 'Y', ь: 'y' },
+        // Need a reference URL for German, although this is pretty well-known.
+        de: { Ä: 'AE', ä: 'ae', Ö: 'OE', ö: 'oe', Ü: 'UE', ü: 'ue' },
+        // Need a reference URL for Serbian.
+        sr: { đ: 'dj', Đ: 'DJ' },
+        // https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/864314/ROMANIZATION_OF_UKRAINIAN.pdf
+        uk: { И: 'Y', и: 'y', Й: 'Y', й: 'y', Ц: 'Ts', ц: 'ts', Х: 'Kh', х: 'kh', Щ: 'Shch', щ: 'shch', Г: 'H', г: 'h' }
+    }
+    let defaultLocale = {};
+    var slug = {};
+    slug.defaults = {
+        charmap: slug.charmap,
+        mode: 'pretty',
+        modes: {
+            rfc3986: {
+                replacement: '-',
+                remove: null,
+                lower: true,
+                charmap: slug.charmap,
+                multicharmap: slug.multicharmap,
+                trim: true
+            },
+            pretty: {
+                replacement: '-',
+                remove: null,
+                lower: true,
+                charmap: slug.charmap,
+                multicharmap: slug.multicharmap,
+                trim: true
+            }
+        },
+        multicharmap: slug.multicharmap,
+        fallback: true
+    }
+    if (typeof string !== 'string') {
+        throw new Error('slug() requires a string argument, received ' + typeof string)
+    }
+    if (typeof opts === 'string') { opts = { replacement: opts } }
+    opts = opts ? Object.assign({}, opts) : {}
+    opts.mode = opts.mode || slug.defaults.mode
+    const defaults = slug.defaults.modes[opts.mode]
+    const keys = ['replacement', 'multicharmap', 'charmap', 'remove', 'lower', 'trim']
+    for (let key, i = 0, l = keys.length; i < l; i++) {
+        key = keys[i]
+        opts[key] = (key in opts) ? opts[key] : defaults[key]
+    }
+    const localeMap = locales[opts.locale] || defaultLocale
+
+    let lengths = []
+    for (const key in opts.multicharmap) {
+        if (!Object.prototype.hasOwnProperty.call(opts.multicharmap, key)) { continue }
+
+        const len = key.length
+        if (lengths.indexOf(len) === -1) { lengths.push(len) }
+    }
+
+    // We want to match the longest string if there are multiple matches, so
+    // sort lengths in descending order.
+    lengths = lengths.sort(function (a, b) { return b - a })
+
+    const disallowedChars = opts.mode === 'rfc3986' ? /[^\w\s\-.~]/ : /[^A-Za-z0-9\s]/
+
+    let result = ''
+    for (let char, i = 0, l = string.length; i < l; i++) {
+        char = string[i]
+        let matchedMultichar = false
+        for (let j = 0; j < lengths.length; j++) {
+            const len = lengths[j]
+            const str = string.substr(i, len)
+            if (opts.multicharmap[str]) {
+                i += len - 1
+                char = opts.multicharmap[str]
+                matchedMultichar = true
+                break
+            }
+        }
+        if (!matchedMultichar) {
+            if (localeMap[char]) {
+                char = localeMap[char]
+            } else if (opts.charmap[char]) {
+                char = opts.charmap[char].replace(opts.replacement, ' ')
+            } else if (char.includes(opts.replacement)) {
+                // preserve the replacement character in case it is excluded by disallowedChars
+                char = char.replace(opts.replacement, ' ')
+            } else {
+                char = char.replace(disallowedChars, '')
+            }
+        }
+        result += char
+    }
+
+    if (opts.remove) {
+        result = result.replace(opts.remove, '')
+    }
+    if (opts.trim) {
+        result = result.trim()
+    }
+    result = result.replace(/\s+/g, opts.replacement) // convert spaces
+    if (opts.lower) {
+        result = result.toLowerCase()
+    }
+    return result
+}        

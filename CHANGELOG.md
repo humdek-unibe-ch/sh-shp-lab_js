@@ -1,3 +1,7 @@
+# v1.0.2
+### Bugfix
+ - add function `slugify`;
+
 # v1.0.1
 ### Bugfix
 
