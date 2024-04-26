@@ -21,6 +21,7 @@
     --color-border-internal: #efefef;
     --color-gray-background: #f8f8f8;
     --color-gray-content: #8d8d8d;
+    padding: 0px;
 }
 
 /* Set box model to border-box globally */
@@ -113,21 +114,21 @@
     height: auto;
 }
 
-.selfHelp-lab-js header,
-.selfHelp-lab-js footer,
-.selfHelp-lab-js main {
+header,
+footer,
+main {
     padding: 24px;
     padding: var(--padding-internal);
 }
 
 /* Individual parts: Height, borders and background */
-.selfHelp-lab-js header,
-.selfHelp-lab-js footer {
+.header,
+.footer {
     min-height: 8vh;
     min-height: var(--height-min-header-footer);
 }
 
-.selfHelp-lab-js main {
+main {
     min-height: 8vh;
     min-height: var(--height-min-header-footer);
 }
@@ -203,12 +204,12 @@
     border-radius: var(--border-radius-container);
 }
 
-.selfHelp-lab-js header {
+header {
     border-bottom: 1px solid #efefef;
     border-bottom: 1px solid var(--color-border-internal);
 }
 
-.selfHelp-lab-js footer {
+footer {
     border-top: 1px solid #efefef;
     border-top: 1px solid var(--color-border-internal);
     background-color: #f8f8f8;
@@ -227,9 +228,9 @@
     line-height: var(--line-height);
 }
 
-.selfHelp-lab-js header,
-.selfHelp-lab-js footer,
-.selfHelp-lab-js main {
+header,
+footer,
+main {
     /* Set display style explicitly for legacy browsers
      that are unfamiliar with these elements */
     display: block;

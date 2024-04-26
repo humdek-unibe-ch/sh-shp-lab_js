@@ -1,3 +1,7 @@
+# v1.0.3
+### Bugfix
+ - adjust the `css` to be as similar to the original
+
 # v1.0.2
 ### Bugfix
  - add function `slugify`;
