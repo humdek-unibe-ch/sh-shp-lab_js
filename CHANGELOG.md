@@ -1,6 +1,9 @@
 # v1.1.0
+### New Features
+ - add field `debug` to style `labJS`
+
 ### Bugfix
- - properly propagate `entry_record` to style `LabJS`
+ - properly propagate `entry_record` to style `labJS`
 
 # v1.0.3
 ### Bugfix
