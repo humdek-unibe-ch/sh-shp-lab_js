@@ -1,3 +1,7 @@
+# v1.1.1
+### Bugfix
+ - fix the db version script
+
 # v1.1.0
 ### New Features
  - add field `debug` to style `labJS`
