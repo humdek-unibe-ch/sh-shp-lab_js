@@ -62,9 +62,9 @@ class LabJSModel extends StyleModel
      * @param array $entry_record
      *  An array that contains the entry record information.
      */
-    public function __construct($services, $id, $params)
+    public function __construct($services, $id, $params, $id_page, $entry_record)
     {
-        parent::__construct($services, $id, $params);
+        parent::__construct($services, $id, $params, $id_page, $entry_record);
         $this->once_per_schedule = $this->get_db_field('once_per_schedule', 0);
         $this->once_per_user = $this->get_db_field('once_per_user', 0);
         $this->start_time = $this->get_db_field('start_time', '00:00');

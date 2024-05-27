@@ -1,3 +1,7 @@
+# v1.1.0
+### Bugfix
+ - properly propagate `entry_record` to style `LabJS`
+
 # v1.0.3
 ### Bugfix
  - adjust the `css` to be as similar to the original

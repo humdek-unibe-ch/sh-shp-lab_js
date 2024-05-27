@@ -34,9 +34,9 @@ class LabJSComponent extends BaseComponent
      * @param array $entry_record
      *  An array that contains the entry record information.
      */
-    public function __construct($services, $id, $params)
+    public function __construct($services, $id, $params, $id_page, $entry_record)
     {
-        $model = new LabJSModel($services, $id, $params);        
+        $model = new LabJSModel($services, $id, $params, $id_page, $entry_record);        
         $controller = null;
         if(!$model->is_cms_page())
             $controller = new LabJSController($model);
