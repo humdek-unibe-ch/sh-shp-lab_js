@@ -30,7 +30,7 @@ class ModuleLabJSComponent extends BaseComponent
     {
         $lid = isset($params['lid']) ? intval($params['lid']) : null;
         $mode = isset($params['mode']) ? $params['mode'] : null;
-        $model = new ModuleLabJSModel($services);
+        $model = new ModuleLabJSModel($services, $lid);
         $controller = new ModuleLabJSController($model, $mode, $lid);
         $view = new ModuleLabJSView($model, $controller, $mode, $lid);
         parent::__construct($model, $view, $controller);

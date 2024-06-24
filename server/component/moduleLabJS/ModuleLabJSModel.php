@@ -13,6 +13,10 @@ class ModuleLabJSModel extends BaseModel
 {
 
     /* Constructors ***********************************************************/
+    /**
+     * LabJS object
+     */
+    private $lab;
 
     /**
      * The constructor.
@@ -21,9 +25,10 @@ class ModuleLabJSModel extends BaseModel
      *  An associative array holding the differnt available services. See the
      *  class definition BasePage for a list of all services.
      */
-    public function __construct($services)
+    public function __construct($services, $lid)
     {
         parent::__construct($services);
+        $this->lab = $this->get_labjs($lid);
     }
 
     /**
@@ -36,6 +41,7 @@ class ModuleLabJSModel extends BaseModel
         try {
             $this->db->begin_transaction();
             $labjs_gen_id = "LJS_" . substr(uniqid(), -15);
+            $this->set_dataTables_displayName($labjs_gen_id, $labjs_gen_id);
             $lid = $this->db->insert(LABJS_TABLE_LABJS, array(
                 "labjs_generated_id" => $labjs_gen_id,
                 "name" => $labjs_gen_id
@@ -68,6 +74,7 @@ class ModuleLabJSModel extends BaseModel
     {
         try {
             $this->db->begin_transaction();
+            $this->set_dataTables_displayName($this->lab['labjs_generated_id'], $_POST['name']);
             $this->db->update_by_ids(LABJS_TABLE_LABJS, array("config" => $labJson, "name" => $_POST['name']), array('id' => $lid));
             $this->transaction->add_transaction(
                 transactionTypes_update,
