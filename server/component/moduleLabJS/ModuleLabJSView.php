@@ -94,8 +94,8 @@ class ModuleLabJSView extends BaseView
                             "type" => "danger",
                             "confirmation_title" => "Delete LabJS",
                             "label_cancel" => "Cancel",
-                            "label_continue" => "Delete",
-                            "label_message" => "Are you sure that you want to delete LabJS: <code>" . ($this->lab ? $this->lab['labjs_generated_id'] : "") . "</code>?",
+                            "confirmation_continue" => "Delete",
+                            "confirmation_message" => "Are you sure that you want to delete LabJS: <code>" . ($this->lab ? $this->lab['labjs_generated_id'] : "") . "</code>?",
                         ))
                     )
                 )),
