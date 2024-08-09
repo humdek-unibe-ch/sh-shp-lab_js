@@ -130,13 +130,11 @@ class LabJSModel extends StyleModel
         if (!$lab) {
             return false;
         }
-        $user_name = $this->db->fetch_user_name();
-        $user_code = $this->db->get_user_code();
         $lab['name'] = 'lab-js';
         $data_config = $this->get_db_field('data_config');
         $lab['content'] = $lab['config'];
         $lab['section_name'] = $this->section_name;
-        $lab['content'] = $this->calc_dynamic_values($lab, $data_config, $user_name, $user_code);
+        $lab['content'] = $this->calc_dynamic_values($lab, $data_config);
         $lab['config'] = $lab['content'];
         return $lab;
     }
