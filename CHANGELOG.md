@@ -1,3 +1,7 @@
+# v1.1.3
+### Bugfix
+ - properly check if the LabJS is object
+
 # v1.1.2 - Requires SelfHelp v7.0.0+
 ### New Features
  - make it compatible with the `user_input` refactoring
