@@ -23,6 +23,8 @@ class LabJSView extends StyleView
      */
     private $lab;
 
+    public $lab_config;
+
     /**
      * If it is set it redirects to this link after the lab is completed
      */
@@ -45,6 +47,7 @@ class LabJSView extends StyleView
         $this->sid = $this->model->get_db_field('lab-js', '');
         if ($this->sid > 0) {
             $this->lab = $this->model->get_lab();
+            $this->lab_config = isset($this->lab['config']) ? htmlspecialchars($this->lab['config'], ENT_QUOTES, 'UTF-8') : '';
         }
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
     }

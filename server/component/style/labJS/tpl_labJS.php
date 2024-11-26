@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 ?>
-<div class="selfHelp-lab-js-holder d-flex justify-content-center <?php echo $this->css; ?>" data-lab-js='<?php echo isset($this->lab['config']) ?  htmlspecialchars($this->lab['config'], ENT_QUOTES, 'UTF-8') : ""; ?>' data-lab-js-fields='<?php echo isset($lab_fields) ? $lab_fields : "" ?>'>
+<div class="selfHelp-lab-js-holder d-flex justify-content-center <?php echo $this->css; ?>" data-lab-js='<?php echo $this->lab_config ?>'>
     <div class="selfHelp-lab-js container fullscreen" data-labjs-section="main">
 
     </div>

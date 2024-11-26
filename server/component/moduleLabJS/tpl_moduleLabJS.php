@@ -10,7 +10,7 @@
         </div>
         <div class="col">    
             <?php $this->output_alert(); ?>        
-            <div class="jumbotron">
+            <div class="bg-light mb-4 rounded-2 py-5 px-3">
                 <h1>Labjs</h1>
                 <p>This page shows all created labs. If you click on a labjs you can select it.
                 </p>                 
