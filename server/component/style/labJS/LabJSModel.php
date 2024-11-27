@@ -90,7 +90,7 @@ class LabJSModel extends StyleModel
      * Prepare the data for processing.
      *
      * This function prepares the provided data for further processing. It checks each key in the data array
-     * and formats it accordingly. If the key is one of 'labjs_response_id', 'triggerType', or 'labjs_generated_id',
+     * and formats it accordingly. If the key is one of 'labjs_response_id', 'trigger_type', or 'labjs_generated_id',
      * it keeps the original value. If the value is an array, it converts it to JSON format and prefixes the key
      * with 'extra_data_'. If the value is not an array, it keeps the original value and prefixes the key with 'extra_data_'.
      * Additionally, it stores the original data in a key '_raw_data' in JSON format under the assumption that the original data
@@ -103,7 +103,7 @@ class LabJSModel extends StyleModel
     {
         $prepared_data = array();
         foreach ($data['metadata'] as $key => $value) {
-            if (in_array($key, ['labjs_response_id', 'triggerType', 'labjs_generated_id'])) {
+            if (in_array($key, ['labjs_response_id', 'trigger_type', 'labjs_generated_id'])) {
                 $prepared_data[$key] = $value;
             } else {
                 if (is_array($value)) {
@@ -149,11 +149,11 @@ class LabJSModel extends StyleModel
         $data = $this->prepare_data($data);
         $lab = $this->get_raw_lab();
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
-            if (isset($data['triggerType'])) {
+            if (isset($data['trigger_type'])) {
                 $updateBasedOn = array(
                     "labjs_response_id" => $data['labjs_response_id']
                 );
-                if ($data['triggerType'] == actionTriggerTypes_started) {
+                if ($data['trigger_type'] == actionTriggerTypes_started) {
                     $id_table = $this->user_input->get_dataTable_id($data['labjs_generated_id']);
                     $filter = '';
                     foreach ($updateBasedOn as $key => $value) {
