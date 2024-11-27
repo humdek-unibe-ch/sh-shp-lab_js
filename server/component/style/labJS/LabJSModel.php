@@ -45,6 +45,8 @@ class LabJSModel extends StyleModel
      */
     private $end_time_calced;
 
+    private $show_view = true;
+
     /* Constructors ***********************************************************/
 
     /**
@@ -178,5 +180,15 @@ class LabJSModel extends StyleModel
         }
         return false;
     }
+
+    public function get_show_view(): bool
+    {
+        return $this->show_view;
+    } 
+    
+    public function set_show_view(bool $show_view): void
+    {
+        $this->show_view = $show_view;
+    }   
 }
 ?>

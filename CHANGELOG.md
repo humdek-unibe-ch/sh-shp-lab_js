@@ -1,3 +1,6 @@
+# v1.1.6
+ - on data save do not load the whole view. Just save the data.
+
 # v1.1.5
  - do not load LabJS in CMS
  - properly save the data without duplication

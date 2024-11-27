@@ -44,12 +44,16 @@ class LabJSView extends StyleView
     public function __construct($model, $controller)
     {
         parent::__construct($model, $controller);
-        $this->sid = $this->model->get_db_field('lab-js', '');
+        $this->sid = $this->model->get_db_field('lab-js', '');        
+        $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
+    }
+
+    private function prepare_lab(): void
+    {
         if ($this->sid > 0) {
             $this->lab = $this->model->get_lab();
             $this->lab_config = isset($this->lab['config']) ? htmlspecialchars($this->lab['config'], ENT_QUOTES, 'UTF-8') : '';
         }
-        $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
     }
 
 
@@ -67,6 +71,7 @@ class LabJSView extends StyleView
             // cms - do not load the experiment
             return;
         }
+        $this->prepare_lab();
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
@@ -76,10 +81,11 @@ class LabJSView extends StyleView
         );
         $lab_fields = json_encode($lab_fields);
         require __DIR__ . "/tpl_labJS.php";
-    }
+    }    
 
     public function output_content_mobile()
     {
+        $this->prepare_lab();        
         $style = parent::output_content_mobile();
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #

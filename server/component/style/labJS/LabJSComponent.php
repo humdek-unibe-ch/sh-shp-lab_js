@@ -36,12 +36,14 @@ class LabJSComponent extends BaseComponent
      */
     public function __construct($services, $id, $params, $id_page, $entry_record)
     {
-        $model = new LabJSModel($services, $id, $params, $id_page, $entry_record);        
+        $model = new LabJSModel($services, $id, $params, $id_page, $entry_record);
         $controller = null;
-        if(!$model->is_cms_page())
+        if (!$model->is_cms_page())
             $controller = new LabJSController($model);
-        $view = new LabJSView($model, $controller);
-        parent::__construct($model, $view, $controller);
+        if ($model->get_show_view()) {
+            $view = new LabJSView($model, $controller);
+            parent::__construct($model, $view, $controller);
+        }
     }
 }
 ?>
