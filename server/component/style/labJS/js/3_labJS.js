@@ -18,6 +18,7 @@ $(document).ready(function () {
 function initLabJS() {
     // Define labjs_experimentc
     $('.selfHelp-lab-js-holder').each(function () {
+        labJSFields = $(this).data('lab-js-fields');
         labJSConfig = $(this).data('lab-js');
         if (typeof labJSConfig === "string") {
             try {
@@ -25,9 +26,7 @@ function initLabJS() {
             } catch (e) {
                 console.error("Error parsing LabJS config from string to object:", e);
             }
-        }
-        
-        labJSFields = $(this).data('lab-js-fields');
+        }                
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
         loadExperiment(labJSConfig);

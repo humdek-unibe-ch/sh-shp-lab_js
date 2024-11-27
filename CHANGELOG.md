@@ -1,3 +1,7 @@
+# v1.1.4
+### Bugfix
+ - load first LabJs field before the experiment
+
 # v1.1.3
 ### Bugfix
  - properly check if the LabJS is object
