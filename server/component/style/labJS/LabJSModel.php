@@ -150,17 +150,33 @@ class LabJSModel extends StyleModel
         $lab = $this->get_raw_lab();
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['triggerType'])) {
+                $updateBasedOn = array(
+                    "labjs_response_id" => $data['labjs_response_id']
+                );
                 if ($data['triggerType'] == actionTriggerTypes_started) {
-                   return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
+                    $id_table = $this->user_input->get_dataTable_id($data['labjs_generated_id']);
+                    $filter = '';
+                    foreach ($updateBasedOn as $key => $value) {
+                        $filter = $filter . ' AND ' . $key . ' = "' . $value . '"';
+                    }
+                    $record = $this->user_input->get_data(
+                        $id_table,
+                        $filter,
+                        true,
+                        $_SESSION['id_user'],
+                        true
+                    );
+                    if ($record) {
+                        return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
+                    } else {
+                        return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
+                    }
                 } else {
-                    return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, array(
-                        "labjs_response_id" => $data['labjs_response_id']
-                    ));
+                    return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
                 }
             }
         }
         return false;
     }
-
 }
 ?>
