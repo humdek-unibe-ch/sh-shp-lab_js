@@ -60,7 +60,13 @@ class LabJSView extends StyleView
      */
     public function output_content()
     {
-
+        if (
+            (method_exists($this->model, 'is_cms_page') && $this->model->is_cms_page()) &&
+            (method_exists($this->model, 'is_cms_page_editing') && $this->model->is_cms_page_editing())
+        ) {
+            // cms - do not load the experiment
+            return;
+        }
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
