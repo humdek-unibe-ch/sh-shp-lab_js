@@ -1,3 +1,6 @@
+# v1.1.5 (Not released)
+ - do not load LabJS in CMS
+
 # v1.1.4
 ### Bugfix
  - load first LabJs field before the experiment
