@@ -1,5 +1,6 @@
 # v1.1.5 (Not released)
  - do not load LabJS in CMS
+ - use `triggerType` variable instead of `trigger_type` in order to work with the new `user_input` refactoring
 
 # v1.1.4
 ### Bugfix
