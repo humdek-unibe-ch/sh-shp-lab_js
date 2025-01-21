@@ -150,6 +150,8 @@ class LabJSModel extends StyleModel
     {
         $data = $this->prepare_data($data);
         $lab = $this->get_raw_lab();
+        var_dump($data);
+        var_dump($lab);
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['trigger_type'])) {
                 $updateBasedOn = array(
@@ -169,19 +171,15 @@ class LabJSModel extends StyleModel
                         true
                     );
                     if ($record) {
-                        var_dump('start1');
                         return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
                     } else {
-                        var_dump('start2');
                         return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
                     }
                 } else {
-                    var_dump('update');
                     return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
                 }
             }
         }
-        var_dump('nothing');
         return false;
     }
 
