@@ -5,6 +5,11 @@
 ?>
 <?php
 require_once __DIR__ . "/../../../../../../component/BaseController.php";
+
+// Define a global variable
+global $labjs_saved;
+$labjs_saved = false;
+
 /**
  * The controller class of formUserInput style component.
  */
@@ -27,9 +32,10 @@ class LabJSController extends BaseController
         parent::__construct($model);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Decode transmitted data            
+            global $labjs_saved;
             $data = json_decode(file_get_contents('php://input'), true);
-            if (isset($data['metadata']['trigger_type']) && !isset($_REQUEST['labjs_saved'])) {
-                $_REQUEST['labjs_saved'] = true;
+            if (isset($data['metadata']['trigger_type']) && !$labjs_saved) {
+                $labjs_saved = true;
                 $this->model->save_lab($data);
                 $this->model->set_show_view(false);
             }
