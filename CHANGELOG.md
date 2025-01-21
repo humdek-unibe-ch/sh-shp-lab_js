@@ -1,3 +1,7 @@
+# v1.1.8
+### Bugfix
+  - on `saveData` do not exit but add a flag to know that the data was saved
+
 # v1.1.7
  - on `saveData` accept the data and exit;
 
