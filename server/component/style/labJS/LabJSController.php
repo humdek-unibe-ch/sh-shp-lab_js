@@ -31,6 +31,7 @@ class LabJSController extends BaseController
             if (isset($data['metadata']['trigger_type'])) {
                 $this->model->save_lab($data);
                 $this->model->set_show_view(false);
+                exit;
             }
         }
     }

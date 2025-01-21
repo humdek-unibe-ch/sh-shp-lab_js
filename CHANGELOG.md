@@ -1,3 +1,6 @@
+# v1.1.7
+ - on `saveData` accept the data and exit;
+
 # v1.1.6
  - on data save do not load the whole view. Just save the data.
 
