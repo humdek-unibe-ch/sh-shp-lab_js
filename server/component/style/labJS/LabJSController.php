@@ -37,11 +37,9 @@ class LabJSController extends BaseController
             $data = json_decode(file_get_contents('php://input'), true);
             if (isset($data['metadata']['trigger_type']) && !$labjs_saved) { 
                 $res = $this->model->save_lab($data);
-                var_dump($res);
-                if($res) {
-                    $labjs_saved = true;
-                }
+                var_dump($res);                
                 $this->model->set_show_view(false);
+                $labjs_saved = true;
             }
         }
     }
