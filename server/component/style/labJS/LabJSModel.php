@@ -150,8 +150,6 @@ class LabJSModel extends StyleModel
     {
         $data = $this->prepare_data($data);
         $lab = $this->get_raw_lab();
-        var_dump($data['labjs_generated_id']);
-        var_dump($lab['labjs_generated_id']);
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['trigger_type'])) {
                 $updateBasedOn = array(

@@ -1,3 +1,7 @@
+# v1.1.10
+### Bugfix
+ - properly save the data only once
+
 # v1.1.9
 ### Bugfix
  - use a global variable to know if the data was saved
