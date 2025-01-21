@@ -33,10 +33,12 @@ class LabJSController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Decode transmitted data            
             global $labjs_saved;
+            var_dump($labjs_saved);
             $data = json_decode(file_get_contents('php://input'), true);
             if (isset($data['metadata']['trigger_type']) && !$labjs_saved) {
                 $labjs_saved = true;
-                $this->model->save_lab($data);
+                $res = $this->model->save_lab($data);
+                var_dump($res);
                 $this->model->set_show_view(false);
             }
         }
