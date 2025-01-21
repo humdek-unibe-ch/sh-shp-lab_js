@@ -169,15 +169,19 @@ class LabJSModel extends StyleModel
                         true
                     );
                     if ($record) {
+                        var_dump('start1');
                         return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
                     } else {
+                        var_dump('start2');
                         return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data);
                     }
                 } else {
+                    var_dump('update')
                     return $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $updateBasedOn);
                 }
             }
         }
+        var_dump('nothing')
         return false;
     }
 
