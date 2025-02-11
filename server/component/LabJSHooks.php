@@ -184,5 +184,15 @@ class LabJSHooks extends BaseHooks
     {
         return parent::get_plugin_db_version($plugin_name);
     }
+
+
+    public function add_transaction($args)
+    {   
+        if(isset($args['verbal_log']) && isset($args['verbal_log']['form_data']) && isset($args['verbal_log']['form_data']['form_fields'])&& isset($args['verbal_log']['form_data']['form_fields']['_raw_data']))
+        {
+            unset($args['verbal_log']['form_data']['form_fields']['_raw_data']);
+        }      
+        return $this->execute_private_method($args);
+    }
 }
 ?>

@@ -1,3 +1,7 @@
+# v1.2.0
+### New feature
+ - do not save `_raw_data` in transaction
+
 # v1.1.10
 ### Bugfix
  - properly save the data only once
