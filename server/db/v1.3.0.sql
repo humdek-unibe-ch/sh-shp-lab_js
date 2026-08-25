@@ -40,4 +40,4 @@ VALUES (NULL, 'block_updates_when', get_field_type_id('text'), 0);
 
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
 VALUES (get_style_id('labJS'), get_field_id('block_updates_when'), '',
-'Column that locks a row against further updates. Empty keeps the default: a keyed row is always updated. Set to a column name and a row whose value there is set and not "0" is never written to again - use with update_based_on to make a key single-use.');
+'Column that locks a row against further updates. Empty keeps the default: a keyed row is always updated. Set to a column name and a row whose value there is set and not "0" refuses further writes - use with update_based_on to make a key single-use. An experiment that writes the column itself is never blocked by it, so the run that finishes a study can still save.');
