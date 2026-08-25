@@ -44,6 +44,52 @@ function generate_labjs_response_id() {
 }
 
 /**
+ * Resolve redirect_at_end for navigation after a finished experiment.
+ * Templates containing {{name}} are filled from the data being saved; primitive
+ * values are encodeURIComponent'd. Missing / object / array values become ''.
+ * Relative templated results are joined with basePath. Static (non-template)
+ * values from PHP are returned unchanged — they are already get_link_url URLs.
+ */
+function resolveRedirectAtEnd(template, data, basePath) {
+    if (!template) {
+        return '';
+    }
+    var raw = String(template);
+    // PHP already resolved page-keyword redirects; do not touch them.
+    if (!/\{\{[^}]+\}\}/.test(raw)) {
+        return raw;
+    }
+
+    var values = data || {};
+    var resolved = raw.replace(/\{\{([^}]+)\}\}/g, function (_match, name) {
+        var value = values[String(name).trim()];
+        if (value === null || value === undefined) {
+            return '';
+        }
+        var type = typeof value;
+        if (type === 'string' || type === 'number' || type === 'boolean') {
+            return encodeURIComponent(String(value));
+        }
+        return '';
+    });
+
+    // Already absolute (http/https) or protocol-relative — use as-is.
+    if (/^(https?:)?\/\//i.test(resolved)) {
+        return resolved;
+    }
+
+    var base = basePath == null ? '' : String(basePath);
+    if (!base) {
+        return resolved;
+    }
+    // Join base_path and relative path without duplicating slashes.
+    if (resolved.charAt(0) === '/') {
+        return base.replace(/\/+$/, '') + resolved;
+    }
+    return base.replace(/\/+$/, '') + '/' + resolved.replace(/^\/+/, '');
+}
+
+/**
  * Saves data to the LabJS datastore for the Self-Help application.
  * @param {string} trigger_type - The type of trigger.
  * @param {object} [extra_data] - Additional data to save.
@@ -58,7 +104,20 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
     }
     extra_data['labjs_response_id'] = labjs_response_id;
     extra_data['labjs_generated_id'] = labJSFields['labjs_generated_id'];
+    // URL parameters are saved with the run, so whatever identified it in the
+    // link is in the data too, and can be handed on through redirect_at_end.
+    if (labJSFields['extra_params']) {
+        for (var prop in labJSFields['extra_params']) {
+            extra_data['extra_param_' + prop] = labJSFields['extra_params'][prop];
+        }
+    }
     extra_data['redirect_at_end'] = labJSFields['redirect_at_end'];
+    // A {{name}} template is filled in here from the data being saved.
+    if (/\{\{[^}]+\}\}/.test(String(labJSFields['redirect_at_end'] || ''))) {
+        extra_data['redirect_at_end'] = resolveRedirectAtEnd(
+            labJSFields['redirect_at_end'], extra_data, labJSFields['base_path']
+        );
+    }
     labjs_experiment.options.datastore.transmit("#", extra_data);
     if (extra_data['trigger_type'] == 'finished' && extra_data['redirect_at_end'] && extra_data['redirect_at_end'] != '') {
         // redirect on finish and if redirect url is set

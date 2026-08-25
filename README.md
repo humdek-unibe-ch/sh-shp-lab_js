@@ -21,6 +21,24 @@ if (typeof saveDataToSelfHelp === 'function') {
 }
  ```
 
+# Style fields
+
+ - `redirect_at_end` - where to send the participant once the experiment saves with
+   status `finished`. Accepts a page keyword (`my-page`) or a template containing
+   `{{name}}` placeholders (`my-page/{{extra_param_code}}`). Placeholders are filled
+   from the data being saved; a missing value resolves to an empty string.
+ - `url_params` - when enabled, the URL parameters of the requested page are handed to
+   the experiment and each is saved with its data as `extra_param_<name>`. Both route
+   parameters and the query string are read; a query parameter wins on a name clash.
+ - `update_based_on` - names the column that identifies a response row. Empty (the
+   default) keys rows on the generated `labjs_response_id`, one row per run. Set to a
+   column name and the experiment updates the row already holding that value, so
+   several components sharing a `labjs_generated_id` build one row together. A key
+   matching no row falls back to the default rather than inserting.
+ - `block_updates_when` - names a column that locks a row. Empty (the default) never
+   locks. Set to a column name and a row whose value there is set and not `"0"` is
+   never written to again - use with `update_based_on` to make a key single-use.
+
 # Useful LabJS code snippets
  - prevent `reload` - add the code in the beginning to initialize an event  listener for reloading
 ```

@@ -93,6 +93,7 @@ class LabJSModel extends StyleModel
      *
      * This function prepares the provided data for further processing. It checks each key in the data array
      * and formats it accordingly. If the key is one of 'labjs_response_id', 'trigger_type', or 'labjs_generated_id',
+     * or was received through url_params ('extra_param_*'),
      * it keeps the original value. If the value is an array, it converts it to JSON format and prefixes the key
      * with 'extra_data_'. If the value is not an array, it keeps the original value and prefixes the key with 'extra_data_'.
      * Additionally, it stores the original data in a key '_raw_data' in JSON format under the assumption that the original data
@@ -105,6 +106,12 @@ class LabJSModel extends StyleModel
     {
         $prepared_data = array();
         foreach ($data['metadata'] as $key => $value) {
+            // Values received through url_params keep their own name, as the
+            // surveyJS style stores them, so a study mixing the two lines up.
+            if (strpos($key, 'extra_param_') === 0) {
+                $prepared_data[$key] = $value;
+                continue;
+            }
             if (in_array($key, ['labjs_response_id', 'trigger_type', 'labjs_generated_id'])) {
                 $prepared_data[$key] = $value;
             } else {
@@ -142,6 +149,112 @@ class LabJSModel extends StyleModel
     }
 
     /**
+     * The updateBasedOn key this experiment identifies a row with, or null for
+     * the default `labjs_response_id` behaviour.
+     *
+     * `get_data()` takes a filter string rather than bound parameters, so a
+     * value that could break out of it is rejected instead of escaped.
+     *
+     * @param array $data
+     *  The prepared data being saved.
+     * @return array|null
+     */
+    private function get_update_based_on_key($data)
+    {
+        $col = trim((string) $this->get_db_field('update_based_on', ''));
+        if ($col === '' || !isset($data[$col])) {
+            return null;
+        }
+        // A column name is an identifier; a value is compared literally.
+        if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $col)) {
+            return null;
+        }
+        $value = $data[$col];
+        if (!is_scalar($value)) {
+            return null;
+        }
+        $value = (string) $value;
+        if ($value === '' || !preg_match('/^[A-Za-z0-9_.:@\- ]{1,190}$/', $value)) {
+            return null;
+        }
+        return array($col => $value);
+    }
+
+    /**
+     * Whether the row this key points at is locked against updates.
+     *
+     * `block_updates_when` names a column; a row whose value there is set and
+     * not "0" is finished as far as the study is concerned, so a later run
+     * must not overwrite it. Empty (the default) never locks.
+     *
+     * @param string $table_name
+     *  The data table the experiment writes to.
+     * @param array $key
+     *  Column => value, as returned by get_update_based_on_key().
+     * @return bool
+     */
+    private function row_is_locked($table_name, $key)
+    {
+        $col = trim((string) $this->get_db_field('block_updates_when', ''));
+        if ($col === '' || !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $col)) {
+            return false;
+        }
+        $id_table = $this->user_input->get_dataTable_id($table_name);
+        if (!$id_table) {
+            return false;
+        }
+        $filter = '';
+        foreach ($key as $k => $value) {
+            $filter .= ' AND ' . $k . ' = "' . $value . '"';
+        }
+        $record = $this->user_input->get_data(
+            $id_table,
+            $filter,
+            true,
+            isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null,
+            true
+        );
+        if (empty($record)) {
+            return false;
+        }
+        // db_first returns one associative row, not a list.
+        if (!is_array($record) || !isset($record[$col])) {
+            return false;
+        }
+        $value = trim((string) $record[$col]);
+        return $value !== '' && $value !== '0';
+    }
+
+    /**
+     * Whether a row already answers to this key.
+     *
+     * @param string $table_name
+     *  The data table the experiment writes to.
+     * @param array $key
+     *  Column => value, as returned by get_update_based_on_key().
+     * @return bool
+     */
+    private function row_exists($table_name, $key)
+    {
+        $id_table = $this->user_input->get_dataTable_id($table_name);
+        if (!$id_table) {
+            return false;
+        }
+        $filter = '';
+        foreach ($key as $col => $value) {
+            $filter .= ' AND ' . $col . ' = "' . $value . '"';
+        }
+        $record = $this->user_input->get_data(
+            $id_table,
+            $filter,
+            true,
+            isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null,
+            true
+        );
+        return !empty($record);
+    }
+
+    /**
      * Save lab js data as external table
      * @param object $data
      * Object with the data that should be saved
@@ -152,6 +265,17 @@ class LabJSModel extends StyleModel
         $lab = $this->get_raw_lab();
         if (isset($lab['labjs_generated_id']) && isset($data['labjs_generated_id']) && $data['labjs_generated_id'] == $lab['labjs_generated_id']) {
             if (isset($data['trigger_type'])) {
+                $shared_key = $this->get_update_based_on_key($data);
+                // Join the shared row only if one already answers to the key, so a
+                // run that has not reached it yet keeps its own row.
+                if ($shared_key !== null && $this->row_exists($data['labjs_generated_id'], $shared_key)) {
+                    // The row is finished; a later run must not overwrite it.
+                    if ($this->row_is_locked($data['labjs_generated_id'], $shared_key)) {
+                        return false;
+                    }
+                    $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $shared_key);
+                    return true;
+                }
                 $updateBasedOn = array(
                     "labjs_response_id" => $data['labjs_response_id']
                 );

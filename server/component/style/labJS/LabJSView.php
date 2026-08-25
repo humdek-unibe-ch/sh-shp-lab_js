@@ -30,6 +30,9 @@ class LabJSView extends StyleView
      */
     private $redirect_at_end;
 
+    /** Whether the URL parameters are handed to the experiment */
+    private $url_params;
+
 
     /* Constructors ***********************************************************/
 
@@ -46,6 +49,34 @@ class LabJSView extends StyleView
         parent::__construct($model, $controller);
         $this->sid = $this->model->get_db_field('lab-js', '');        
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
+        $this->url_params = $this->model->get_db_field('url_params', '');
+    }
+
+    /**
+     * The URL parameters of the requested page, when url_params is enabled.
+     *
+     * @return array
+     */
+    private function get_extra_params()
+    {
+        if (!$this->url_params) {
+            return array();
+        }
+        $router = $this->model->get_services()->get_router();
+        // Route parameters are the only ones a style's data_config can filter on.
+        // A query parameter of the same name wins.
+        $params = array();
+        if (isset($router->route['params']) && is_array($router->route['params'])) {
+            foreach ($router->route['params'] as $name => $value) {
+                if (is_scalar($value)) {
+                    $params[$name] = $value;
+                }
+            }
+        }
+        $url_components = parse_url($router->get_url('#self'));
+        $query_params = array();
+        parse_str(isset($url_components['query']) ? $url_components['query'] : '', $query_params);
+        return array_merge($params, $query_params);
     }
 
     private function prepare_lab(): void
@@ -75,10 +106,22 @@ class LabJSView extends StyleView
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
+        // A {{name}} template is filled in by the client from the saved data, so
+        // it is handed over unresolved instead.
+        if (preg_match('/\{\{[^}]+\}\}/', (string) $this->redirect_at_end)) {
+            $redirect_at_end = preg_replace('/^#+/', '', trim($this->redirect_at_end));
+        }
         $lab_fields = array(
             "redirect_at_end" => $redirect_at_end,
-            "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null
+            "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null,
+            // A resolved template is a relative path, so the install path has to
+            // travel with it for the client to build an absolute URL.
+            "base_path" => defined('BASE_PATH') ? BASE_PATH : ''
         );
+        $extra_params = $this->get_extra_params();
+        if ($extra_params) {
+            $lab_fields['extra_params'] = $extra_params;
+        }
         $lab_fields = json_encode($lab_fields);
         require __DIR__ . "/tpl_labJS.php";
     }    
