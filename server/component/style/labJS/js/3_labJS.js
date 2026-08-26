@@ -186,6 +186,13 @@ function loadExperiment(exp) {
     });
     labjs_experiment = lab.util.fromObject(componentTree);
     labjs_response_id = generate_labjs_response_id();
+    // The run is over here, so leaving is expected: drop the reload warning
+    // before anything navigates away. A study that saves and redirects from
+    // its own screen never passes through saveDataToSelfHelp, so removing it
+    // there alone would leave the prompt in the way of its redirect.
+    labjs_experiment.on('end', function () {
+        setReloadWarning(false);
+    });
     labjs_experiment.run();
 }
 
