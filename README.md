@@ -35,6 +35,12 @@ if (typeof saveDataToSelfHelp === 'function') {
    column name and the experiment updates the row already holding that value, so
    several components sharing a `labjs_generated_id` build one row together. A key
    matching no row falls back to the default rather than inserting.
+ - `warning_on_reload` - when enabled, the browser asks the participant to confirm
+   before a reload or a close interrupts the experiment, since a refresh restarts it
+   from the beginning. The wording is the browser's own and cannot be set, and the
+   prompt only appears once the page has been interacted with. The warning is dropped
+   as soon as the experiment saves as `finished`, so `redirect_at_end` still navigates
+   without prompting. Off by default.
 
 # Useful LabJS code snippets
  - prevent `reload` - add the code in the beginning to initialize an event  listener for reloading

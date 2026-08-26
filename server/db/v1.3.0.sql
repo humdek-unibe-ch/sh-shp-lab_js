@@ -30,3 +30,15 @@ VALUES (NULL, 'update_based_on', get_field_type_id('text'), 0);
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
 VALUES (get_style_id('labJS'), get_field_id('update_based_on'), '',
 'Column that identifies a response row. Empty keeps the default: one row per run, keyed on labjs_response_id. Set to a column name and the experiment updates the row already holding that value - so several components sharing a labjs_generated_id build one row. A key matching no row falls back to the default rather than inserting. The column must identify a single participant.');
+
+-- Ask before a reload or a close interrupts a running experiment. A refresh
+-- restarts it from the beginning, so the trials already done are lost and
+-- leaving should be deliberate. The browser supplies its own wording and only
+-- prompts once the page has been interacted with. Off by default, so existing
+-- experiments are unaffected.
+INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`)
+VALUES (NULL, 'warning_on_reload', get_field_type_id('checkbox'), 0);
+
+INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
+VALUES (get_style_id('labJS'), get_field_id('warning_on_reload'), '0',
+'If enabled, the browser asks the participant to confirm before a reload or a close interrupts the experiment - a refresh restarts it from the beginning and the trials already done are lost. The wording comes from the browser and cannot be set. The warning is dropped once the experiment saves as finished, so redirect_at_end is not affected.');

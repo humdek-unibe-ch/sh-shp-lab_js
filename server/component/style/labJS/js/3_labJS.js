@@ -29,8 +29,45 @@ function initLabJS() {
         }                
         $(this).removeAttr('data-lab-js');
         $(this).removeAttr('data-lab-js-fields');
+        if (labJSFields && labJSFields['warning_on_reload']) {
+            setReloadWarning(true);
+        }
         loadExperiment(labJSConfig);
     });
+}
+
+/** The handler installed by warning_on_reload, so it can be taken off again. */
+var labJSUnloadGuard = null;
+
+/**
+ * Ask before a reload or a close interrupts a running experiment.
+ *
+ * A refresh restarts the experiment from the beginning and the trials already
+ * done are lost, so leaving should be deliberate. The browser supplies its own
+ * wording and only prompts once the page has been interacted with, so a
+ * participant who has not started is never trapped.
+ *
+ * The warning is dropped once the run is finished: leaving is expected from
+ * there on, and `redirect_at_end` would otherwise prompt on its own redirect.
+ *
+ * @param {boolean} on
+ */
+function setReloadWarning(on) {
+    if (on) {
+        if (labJSUnloadGuard) {
+            return;
+        }
+        labJSUnloadGuard = function (e) {
+            e.preventDefault();
+            // Older browsers raise the prompt off returnValue instead.
+            e.returnValue = '';
+            return '';
+        };
+        window.addEventListener('beforeunload', labJSUnloadGuard);
+    } else if (labJSUnloadGuard) {
+        window.removeEventListener('beforeunload', labJSUnloadGuard);
+        labJSUnloadGuard = null;
+    }
 }
 
 /**
@@ -119,6 +156,10 @@ function saveDataToSelfHelp(trigger_type, extra_data) {
         );
     }
     labjs_experiment.options.datastore.transmit("#", extra_data);
+    if (extra_data['trigger_type'] == 'finished') {
+        // The run is over, so leaving the page is no longer an interruption.
+        setReloadWarning(false);
+    }
     if (extra_data['trigger_type'] == 'finished' && extra_data['redirect_at_end'] && extra_data['redirect_at_end'] != '') {
         // redirect on finish and if redirect url is set
         window.location.href = extra_data['redirect_at_end'];

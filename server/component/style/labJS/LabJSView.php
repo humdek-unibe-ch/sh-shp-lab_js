@@ -33,6 +33,9 @@ class LabJSView extends StyleView
     /** Whether the URL parameters are handed to the experiment */
     private $url_params;
 
+    /** Whether leaving a running experiment asks for confirmation */
+    private $warning_on_reload;
+
 
     /* Constructors ***********************************************************/
 
@@ -50,6 +53,7 @@ class LabJSView extends StyleView
         $this->sid = $this->model->get_db_field('lab-js', '');        
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
         $this->url_params = $this->model->get_db_field('url_params', '');
+        $this->warning_on_reload = $this->model->get_db_field('warning_on_reload', 0);
     }
 
     /**
@@ -116,7 +120,8 @@ class LabJSView extends StyleView
             "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null,
             // A resolved template is a relative path, so the install path has to
             // travel with it for the client to build an absolute URL.
-            "base_path" => defined('BASE_PATH') ? BASE_PATH : ''
+            "base_path" => defined('BASE_PATH') ? BASE_PATH : '',
+            "warning_on_reload" => boolval($this->warning_on_reload)
         );
         $extra_params = $this->get_extra_params();
         if ($extra_params) {

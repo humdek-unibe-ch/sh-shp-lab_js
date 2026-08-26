@@ -4,6 +4,7 @@
  - `redirect_at_end` accepts `{{name}}` templates, filled on the client from the data being saved (any `extra_param_*`, `labjs_response_id`). A value without `{{` `}}` resolves exactly as before
  - `update_based_on` on the `labJS` style: names the column that identifies a response row. Empty (the default) keeps the existing behaviour, rows keyed on the generated `labjs_response_id`, one row per run. Set to a column name, the experiment updates the row already holding that value, so several components sharing a data table build one row together. A key matching no row falls back to the default rather than inserting, because the key often arrives part way through a run and inserting then would abandon the row already opened
  - the keyed column must identify one participant on its own. With guest participants every write shares a user, so a value repeated across people would merge them into one row
+ - `warning_on_reload` on the `labJS` style: the browser asks the participant to confirm before a reload or a close interrupts the experiment, since a refresh restarts it from the beginning and the trials already done are lost. Replaces hand-writing a `beforeunload` listener into each study. The wording is the browser's own and cannot be set, and no prompt appears until the page has been interacted with. Dropped as soon as the run saves as `finished`, so `redirect_at_end` navigates without prompting. Off by default
 
 # v1.2.0
 ### New feature
