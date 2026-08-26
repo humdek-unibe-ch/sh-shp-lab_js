@@ -181,61 +181,6 @@ class LabJSModel extends StyleModel
     }
 
     /**
-     * Whether the row this key points at is locked against updates.
-     *
-     * `block_updates_when` names a column; a row whose value there is set and
-     * not "0" is finished as far as the study is concerned, so a later run
-     * must not overwrite it. Empty (the default) never locks.
-     *
-     * An experiment that writes the column itself is never locked by it. It
-     * sends the value on every save, so checking the stored row would make it
-     * refuse its own later writes. Only a save that does not carry the column
-     * can be blocked by it.
-     *
-     * @param string $table_name
-     *  The data table the experiment writes to.
-     * @param array $key
-     *  Column => value, as returned by get_update_based_on_key().
-     * @param array $data
-     *  The incoming save.
-     * @return bool
-     */
-    private function row_is_locked($table_name, $key, $data)
-    {
-        $col = trim((string) $this->get_db_field('block_updates_when', ''));
-        if ($col === '' || !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $col)) {
-            return false;
-        }
-        if (isset($data[$col])) {
-            return false;
-        }
-        $id_table = $this->user_input->get_dataTable_id($table_name);
-        if (!$id_table) {
-            return false;
-        }
-        $filter = '';
-        foreach ($key as $k => $value) {
-            $filter .= ' AND ' . $k . ' = "' . $value . '"';
-        }
-        $record = $this->user_input->get_data(
-            $id_table,
-            $filter,
-            true,
-            isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null,
-            true
-        );
-        if (empty($record)) {
-            return false;
-        }
-        // db_first returns one associative row, not a list.
-        if (!is_array($record) || !isset($record[$col])) {
-            return false;
-        }
-        $value = trim((string) $record[$col]);
-        return $value !== '' && $value !== '0';
-    }
-
-    /**
      * Whether a row already answers to this key.
      *
      * @param string $table_name
@@ -279,10 +224,6 @@ class LabJSModel extends StyleModel
                 // Join the shared row only if one already answers to the key, so a
                 // run that has not reached it yet keeps its own row.
                 if ($shared_key !== null && $this->row_exists($data['labjs_generated_id'], $shared_key)) {
-                    // The row is finished; a later run must not overwrite it.
-                    if ($this->row_is_locked($data['labjs_generated_id'], $shared_key, $data)) {
-                        return false;
-                    }
                     $this->user_input->save_data(transactionBy_by_user, $data['labjs_generated_id'], $data, $shared_key);
                     return true;
                 }

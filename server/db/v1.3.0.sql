@@ -30,14 +30,3 @@ VALUES (NULL, 'update_based_on', get_field_type_id('text'), 0);
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
 VALUES (get_style_id('labJS'), get_field_id('update_based_on'), '',
 'Column that identifies a response row. Empty keeps the default: one row per run, keyed on labjs_response_id. Set to a column name and the experiment updates the row already holding that value - so several components sharing a labjs_generated_id build one row. A key matching no row falls back to the default rather than inserting. The column must identify a single participant.');
-
--- Let a study lock a row once it is finished. `block_updates_when` names a
--- column; a row whose value there is set and not "0" is never updated again,
--- so a later run under an already-used key cannot overwrite it. Empty (the
--- default) never locks, so existing experiments are unaffected.
-INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`)
-VALUES (NULL, 'block_updates_when', get_field_type_id('text'), 0);
-
-INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
-VALUES (get_style_id('labJS'), get_field_id('block_updates_when'), '',
-'Column that locks a row against further updates. Empty keeps the default: a keyed row is always updated. Set to a column name and a row whose value there is set and not "0" refuses further writes - use with update_based_on to make a key single-use. An experiment that writes the column itself is never blocked by it, so the run that finishes a study can still save.');

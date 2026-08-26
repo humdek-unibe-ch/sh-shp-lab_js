@@ -35,9 +35,6 @@ if (typeof saveDataToSelfHelp === 'function') {
    column name and the experiment updates the row already holding that value, so
    several components sharing a `labjs_generated_id` build one row together. A key
    matching no row falls back to the default rather than inserting.
- - `block_updates_when` - names a column that locks a row. Empty (the default) never
-   locks. Set to a column name and a row whose value there is set and not `"0"` is
-   never written to again - use with `update_based_on` to make a key single-use.
 
 # Useful LabJS code snippets
  - prevent `reload` - add the code in the beginning to initialize an event  listener for reloading
