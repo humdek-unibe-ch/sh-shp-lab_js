@@ -217,14 +217,31 @@ function preloadPool(obj) {
         return;
     }
     var urls = [];
+    var seen = {};
+    function want(url) {
+        // An inlined file is already in the page; nothing to fetch.
+        if (!url || url.indexOf('data:') === 0 || seen[url]) {
+            return;
+        }
+        seen[url] = true;
+        urls.push(url);
+    }
     for (var key in pool) {
         if (key === 'index.html' || key === 'style.css') {
             continue;
         }
-        var url = pool[key] && pool[key].content ? pool[key].content : key;
-        // An inlined file is already in the page; nothing to fetch.
-        if (url && url.indexOf('data:') !== 0) {
-            urls.push(url);
+        want(pool[key] && pool[key].content ? pool[key].content : key);
+    }
+    // A study can name its stimuli straight on the components instead of
+    // pooling them, and one edited in the lab.js Builder comes back that way.
+    // loadFiles() has already resolved these against the pool where it could,
+    // so by now each is the url the screen will ask for.
+    for (var id in obj.components) {
+        var files = obj.components[id] && obj.components[id].files;
+        for (var i in files) {
+            if (files[i]) {
+                want(files[i].poolPath);
+            }
         }
     }
     var next = 0;
@@ -233,11 +250,24 @@ function preloadPool(obj) {
             return;
         }
         var media = new Image();
-        media.onload = media.onerror = fetchNext;
+        // The run has already started, so this is competing with the image the
+        // participant is waiting on. Browsers allow only a handful of requests
+        // per host at once: ask for these last, and only a few at a time, so a
+        // stimulus is never queued behind the pool.
+        media.fetchPriority = 'low';
+        media.onload = media.onerror = schedule;
         media.src = urls[next++];
     }
-    for (var i = 0; i < 4 && i < urls.length; i++) {
-        fetchNext();
+    function schedule() {
+        // Yield to whatever the run is doing before asking for the next one,
+        // but do not wait for the browser to fall idle: a trial animating or
+        // timing a screen may not offer a gap for seconds at a time, and the
+        // pool would trickle rather than fill. The low priority above is what
+        // keeps these behind the stimulus on the wire.
+        setTimeout(fetchNext, 0);
+    }
+    for (var i = 0; i < 3 && i < urls.length; i++) {
+        schedule();
     }
 }
 
