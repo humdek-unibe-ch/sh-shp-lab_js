@@ -41,17 +41,7 @@ if (typeof saveDataToSelfHelp === 'function') {
    prompt only appears once the page has been interacted with. The warning is dropped
    as soon as the experiment saves as `finished`, so `redirect_at_end` still navigates
    without prompting. Off by default.
- - `preload_files` - when enabled, every file in the experiment pool is fetched in the
-   background as soon as the experiment starts, so a later screen shows its stimulus
-   from the browser cache instead of waiting on the network. lab.js only preloads
-   `options.media`, which a study built from a file pool does not set, so without this
-   the first sight of an image costs a round trip mid-trial. The fetch runs a few files
-   at a time and starts after the experiment is already running, so it never delays the
-   screen in front of the participant. Off by default.
 
-   Serve the files with a cache lifetime for this to be worth anything: a response
-   carrying only `ETag`/`Last-Modified` is revalidated, so each later screen still
-   pays a conditional request.
 
 # Requirements
 
