@@ -194,6 +194,51 @@ function loadExperiment(exp) {
         setReloadWarning(false);
     });
     labjs_experiment.run();
+    if (labJSFields && labJSFields['preload_files']) {
+        preloadPool(exp);
+    }
+}
+
+/**
+ * Fetch every file in the pool in the background, so a later screen shows its
+ * stimulus from the browser cache instead of waiting on the network.
+ *
+ * lab.js only preloads `options.media`, which a study built from a file pool
+ * does not set, so without this the first sight of an image costs a round trip
+ * in the middle of a trial. The fetch starts after the experiment is already
+ * running and takes a few files at a time, so it never delays the screen the
+ * participant is on.
+ *
+ * @param {object} obj - The LabJS experiment configuration.
+ */
+function preloadPool(obj) {
+    var pool = obj && obj.files && obj.files.files;
+    if (!pool) {
+        return;
+    }
+    var urls = [];
+    for (var key in pool) {
+        if (key === 'index.html' || key === 'style.css') {
+            continue;
+        }
+        var url = pool[key] && pool[key].content ? pool[key].content : key;
+        // An inlined file is already in the page; nothing to fetch.
+        if (url && url.indexOf('data:') !== 0) {
+            urls.push(url);
+        }
+    }
+    var next = 0;
+    function fetchNext() {
+        if (next >= urls.length) {
+            return;
+        }
+        var media = new Image();
+        media.onload = media.onerror = fetchNext;
+        media.src = urls[next++];
+    }
+    for (var i = 0; i < 4 && i < urls.length; i++) {
+        fetchNext();
+    }
 }
 
 /**

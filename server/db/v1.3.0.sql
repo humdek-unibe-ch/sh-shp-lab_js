@@ -42,3 +42,15 @@ VALUES (NULL, 'warning_on_reload', get_field_type_id('checkbox'), 0);
 INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
 VALUES (get_style_id('labJS'), get_field_id('warning_on_reload'), '0',
 'If enabled, the browser asks the participant to confirm before a reload or a close interrupts the experiment - a refresh restarts it from the beginning and the trials already done are lost. The wording comes from the browser and cannot be set. The warning is dropped once the experiment saves as finished, so redirect_at_end is not affected.');
+
+-- Warm the browser cache with the whole file pool. lab.js only preloads
+-- `options.media`, which a study built from a pool does not set, so the first
+-- sight of an image otherwise costs a network round trip in the middle of a
+-- trial. Off by default: an experiment whose stimuli are already inline, or
+-- small enough not to matter, gains nothing from it.
+INSERT IGNORE INTO `fields` (`id`, `name`, `id_type`, `display`)
+VALUES (NULL, 'preload_files', get_field_type_id('checkbox'), 0);
+
+INSERT IGNORE INTO `styles_fields` (`id_styles`, `id_fields`, `default_value`, `help`)
+VALUES (get_style_id('labJS'), get_field_id('preload_files'), '0',
+'If enabled, every file in the experiment pool is fetched in the background once the experiment starts, so a later screen shows its stimulus from the browser cache instead of waiting on the network. The fetch takes a few files at a time and never delays the screen the participant is on. Leave off when the stimuli are inline or few.');

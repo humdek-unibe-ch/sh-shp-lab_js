@@ -36,6 +36,9 @@ class LabJSView extends StyleView
     /** Whether leaving a running experiment asks for confirmation */
     private $warning_on_reload;
 
+    /** Whether the file pool is fetched up front to warm the browser cache */
+    private $preload_files;
+
 
     /* Constructors ***********************************************************/
 
@@ -54,6 +57,7 @@ class LabJSView extends StyleView
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
         $this->url_params = $this->model->get_db_field('url_params', '');
         $this->warning_on_reload = $this->model->get_db_field('warning_on_reload', 0);
+        $this->preload_files = $this->model->get_db_field('preload_files', 0);
     }
 
     /**
@@ -121,7 +125,8 @@ class LabJSView extends StyleView
             // A resolved template is a relative path, so the install path has to
             // travel with it for the client to build an absolute URL.
             "base_path" => defined('BASE_PATH') ? BASE_PATH : '',
-            "warning_on_reload" => boolval($this->warning_on_reload)
+            "warning_on_reload" => boolval($this->warning_on_reload),
+            "preload_files" => boolval($this->preload_files)
         );
         $extra_params = $this->get_extra_params();
         if ($extra_params) {
