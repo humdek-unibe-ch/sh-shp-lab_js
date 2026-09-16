@@ -138,7 +138,13 @@ class LabJSView extends StyleView
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
-        $style['redirect_at_end']['content'] = str_replace(BASE_PATH, "", $redirect_at_end);
+        $redirect_at_end = str_replace(BASE_PATH, "", $redirect_at_end);
+        // A {{name}} template is filled in by the client from the saved data, so
+        // it is handed over unresolved instead.
+        if (preg_match('/\{\{[^}]+\}\}/', (string) $this->redirect_at_end)) {
+            $redirect_at_end = preg_replace('/^#+/', '', trim($this->redirect_at_end));
+        }
+        $style['redirect_at_end']['content'] = $redirect_at_end;
         $style['lab_json'] = $this->lab['config'] ? json_decode($this->lab['config']) : [];
         $style['labjs_generated_id'] = $this->lab['labjs_generated_id'];
         return $style;
