@@ -33,6 +33,9 @@ class LabJSView extends StyleView
     /** Whether the URL parameters are handed to the experiment */
     private $url_params;
 
+    /** Whether leaving a running experiment asks for confirmation */
+    private $warning_on_reload;
+
 
     /* Constructors ***********************************************************/
 
@@ -50,6 +53,7 @@ class LabJSView extends StyleView
         $this->sid = $this->model->get_db_field('lab-js', '');        
         $this->redirect_at_end = $this->model->get_db_field('redirect_at_end', '');
         $this->url_params = $this->model->get_db_field('url_params', '');
+        $this->warning_on_reload = $this->model->get_db_field('warning_on_reload', 0);
     }
 
     /**
@@ -116,7 +120,8 @@ class LabJSView extends StyleView
             "labjs_generated_id" => isset($this->lab['labjs_generated_id']) ? $this->lab['labjs_generated_id'] : null,
             // A resolved template is a relative path, so the install path has to
             // travel with it for the client to build an absolute URL.
-            "base_path" => defined('BASE_PATH') ? BASE_PATH : ''
+            "base_path" => defined('BASE_PATH') ? BASE_PATH : '',
+            "warning_on_reload" => boolval($this->warning_on_reload)
         );
         $extra_params = $this->get_extra_params();
         if ($extra_params) {
@@ -133,7 +138,13 @@ class LabJSView extends StyleView
         $redirect_at_end = preg_replace('/^\/+/', '', $this->redirect_at_end); // remove the first /
         $redirect_at_end = preg_replace('/^#+/', '', $this->redirect_at_end); // remove the first #
         $redirect_at_end = $this->model->get_link_url(str_replace("/", "", $redirect_at_end));
-        $style['redirect_at_end']['content'] = str_replace(BASE_PATH, "", $redirect_at_end);
+        $redirect_at_end = str_replace(BASE_PATH, "", $redirect_at_end);
+        // A {{name}} template is filled in by the client from the saved data, so
+        // it is handed over unresolved instead.
+        if (preg_match('/\{\{[^}]+\}\}/', (string) $this->redirect_at_end)) {
+            $redirect_at_end = preg_replace('/^#+/', '', trim($this->redirect_at_end));
+        }
+        $style['redirect_at_end']['content'] = $redirect_at_end;
         $style['lab_json'] = $this->lab['config'] ? json_decode($this->lab['config']) : [];
         $style['labjs_generated_id'] = $this->lab['labjs_generated_id'];
         return $style;

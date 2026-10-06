@@ -35,18 +35,19 @@ if (typeof saveDataToSelfHelp === 'function') {
    column name and the experiment updates the row already holding that value, so
    several components sharing a `labjs_generated_id` build one row together. A key
    matching no row falls back to the default rather than inserting.
- - `block_updates_when` - names a column that locks a row. Empty (the default) never
-   locks. Set to a column name and a row whose value there is set and not `"0"` is
-   never written to again - use with `update_based_on` to make a key single-use.
 
-# Useful LabJS code snippets
- - prevent `reload` - add the code in the beginning to initialize an event  listener for reloading
-```
-window.addEventListener('beforeunload', function(event) {
-    event.preventDefault(); // Prevents the default window unload behavior (page reload)
-    // Your beforeunload handling code here
-});
-```  
+   Unlike the `surveyJS` style, this only affects where data is *written*: an
+   experiment always starts from the beginning and never restores a previous row into
+   the running study, so a stored answer cannot be handed to the wrong participant.
+   A row already marked `finished` is not protected here either, so a rerun that
+   reaches the same key updates the completed row rather than opening a new one.
+ - `warning_on_reload` - when enabled, the browser asks the participant to confirm
+   before a reload or a close interrupts the experiment, since a refresh restarts it
+   from the beginning. The wording is the browser's own and cannot be set, and the
+   prompt only appears once the page has been interacted with. The warning is dropped
+   as soon as the experiment saves as `finished`, so `redirect_at_end` still navigates
+   without prompting. Off by default.
+
 
 # Requirements
 
